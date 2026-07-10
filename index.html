@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consultoría Salarial Analítica | Percy Muñoz Sierra</title>
+  <meta name="description"
+    content="Estudios de bandas salariales, valuación de puestos por puntos, auditoría de cumplimiento Ley 30709 en Perú, optimización de presupuesto de personal (OPEX) y mentoría en nóminas.">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Metadatos de Redes Sociales (Open Graph para WhatsApp, LinkedIn, etc.) -->
+  <meta property="og:title" content="Consultoría Salarial Analítica | Percy Muñoz Sierra">
+  <meta property="og:description"
+    content="Auditoría de la Ley 30709, diseño de bandas salariales y optimización del OPEX de personal mediante analítica de compensaciones.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="profile-photo.png">
+  <meta property="og:image:alt" content="Percy Muñoz Sierra - Consultoría Salarial Analítica">
+
+  <!-- SEO de Búsqueda: Datos Estructurados Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ConsultingService",
+    "name": "Consultoría Salarial Analítica",
+    "provider": {
+      "@type": "Person",
+      "name": "Percy Muñoz Sierra",
+      "jobTitle": "Consultor de Compensaciones y Data Scientist de RRHH",
+      "url": "https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302"
+    },
+    "description": "Estudios de bandas salariales, valuación de puestos por factores, auditorías de equidad y cumplimiento de la Ley 30709, y optimización de presupuestos de personal (OPEX) con programación lineal y Python.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "PE",
+      "addressRegion": "Lima"
+    },
+    "areaServed": [
+      {
+        "@type": "Country",
+        "name": "Peru"
+      },
+      {
+        "@type": "Country",
+        "name": "Latin America"
+      }
+    ],
+    "email": "pmunozms7@outlook.com",
+    "sameAs": [
+      "https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302"
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" aria-label="Inicio">
+        <span class="brand-mark">CS</span>
+        <span>Consultoría Salarial</span>
+      </a>
+      <div class="nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#metodo">Método</a>
+        <a href="#capacitaciones">Capacitaciones</a>
+        <a href="#aplicaciones">Aplicaciones</a>
+        <a class="button primary"
+          href="mailto:pmunozms7@outlook.com?subject=Consulta%20sobre%20gesti%C3%B3n%20salarial">Agendar diagnóstico</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <canvas id="salaryCanvas" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <div>
+          <p class="eyebrow">Compensaciones con analítica, negocio y evidencia</p>
+          <h1>Consultoría salarial para decidir mejor bajo restricciones reales</h1>
+          <p class="hero-copy">
+            Diseño estudios salariales, estructuras de bandas, metodologías de valuación de puestos, análisis de
+            cumplimiento normativo y escenarios de optimización presupuestaria con Python, programación lineal y machine
+            learning aplicado a compensaciones.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary"
+              href="mailto:pmunozms7@outlook.com?subject=Quiero%20optimizar%20mi%20estructura%20salarial">Solicitar
+              evaluación</a>
+            <a class="button secondary" href="#metodo">Ver metodología</a>
+          </div>
+        </div>
+        <aside class="hero-proof" aria-label="Indicadores de trabajo">
+          <div class="metric-strip">
+            <div class="metric">
+              <strong>4</strong>
+              <span>frentes de análisis salarial</span>
+            </div>
+            <div class="metric">
+              <strong>LP</strong>
+              <span>optimización con restricciones</span>
+            </div>
+            <div class="metric">
+              <strong>ML</strong>
+              <span>modelos predictivos y bandas</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="profile-cta" id="diagnostico">
+      <div class="profile-shell">
+        <!-- Canvas de fondo para curvas salariales interactivas -->
+        <canvas id="profileCanvas" class="profile-canvas-bg" aria-hidden="true"></canvas>
+
+        <button class="profile-arrow prev-slide" type="button" aria-label="Anterior">
+          <span></span>
+        </button>
+
+        <div class="profile-slider-track">
+          <!-- Slide 1: Presentación Personal -->
+          <div class="profile-slide active" data-index="0">
+            <div class="slide-grid">
+              <div class="profile-photo-wrap">
+                <img src="profile-photo.png" alt="Percy Muñoz Sierra" class="profile-photo">
+              </div>
+              <div class="profile-content">
+                <h2>¿Listo para auditar tu estructura?</h2>
+                <p>Solicita un <strong>Diagnóstico Express gratuito</strong> de una muestra de puestos de tu empresa.
+                </p>
+                <div class="profile-card">
+                  <h3>Percy Muñoz Sierra</h3>
+                  <p>Consultor en Compensaciones | People Analytics</p>
+                  <div class="profile-buttons">
+                    <a class="profile-button whatsapp"
+                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20solicitar%20un%20diagn%C3%B3stico%20express%20de%20mi%20estructura%20salarial."
+                      target="_blank" rel="noreferrer">
+                      <span class="button-icon">WA</span>
+                      Escribirme por WhatsApp
+                    </a>
+                    <a class="profile-button linkedin"
+                      href="https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302" target="_blank"
+                      rel="noreferrer">
+                      <span class="button-icon">in</span>
+                      Conectar en LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Caso Retail -->
+          <div class="profile-slide" data-index="1">
+            <div class="slide-grid">
+              <div class="case-graphic-wrap beauty-gradient-1">
+                <div class="case-stat">
+                  <span class="stat-value">-35%</span>
+                  <span class="stat-lbl">Brecha Salarial Inexplicable</span>
+                </div>
+                <div class="spec-bar-wrapper">
+                  <div class="spec-bar-container">
+                    <span class="bar-lbl">Femenino</span>
+                    <div class="spec-bar">
+                      <div class="spec-bar-fill" style="width: 74%;"></div>
+                    </div>
+                  </div>
+                  <div class="spec-bar-container">
+                    <span class="bar-lbl">Masculino</span>
+                    <div class="spec-bar">
+                      <div class="spec-bar-fill" style="width: 100%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-content">
+                <h2>Caso de Éxito: Sector Retail</h2>
+                <p>Optimización presupuestaria de incrementos salariales anuales en una planilla retail de 850
+                  colaboradores.</p>
+                <div class="profile-card case-card-detail">
+                  <h3>Reducción de Inequidades</h3>
+                  <p class="case-outcome">Optimizamos una bolsa de <strong>S/. 350K</strong> al año para 850
+                    colaboradores, logrando reducir la brecha salarial inexplicable de género en un 35% sin sobrepasar
+                    el presupuesto y alineados a la estrategia de retención.</p>
+                  <div class="profile-buttons">
+                    <a class="profile-button whatsapp"
+                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20conocer%20m%C3%A1s%20sobre%20el%20caso%20de%20éxito%20Retail."
+                      target="_blank" rel="noreferrer">
+                      <span class="button-icon">WA</span>
+                      Consultar este caso
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: Caso Ley 30709 -->
+          <div class="profile-slide" data-index="2">
+            <div class="slide-grid">
+              <div class="case-graphic-wrap beauty-gradient-2">
+                <div class="case-stat">
+                  <span class="stat-value">100%</span>
+                  <span class="stat-lbl">Cumplimiento SUNAFIL</span>
+                </div>
+                <div class="case-law-list">
+                  <span class="law-tag">✔ Equidad Interna</span>
+                  <span class="law-tag">✔ Valuación de Puestos</span>
+                  <span class="law-tag">✔ Cuadro de Categorías</span>
+                </div>
+              </div>
+              <div class="profile-content">
+                <h2>Caso: Auditoría Ley 30709</h2>
+                <p>Implementación de la normativa peruana de igualdad salarial en empresa industrial de 1,200
+                  trabajadores.</p>
+                <div class="profile-card case-card-detail">
+                  <h3>Blindaje y Estructuración</h3>
+                  <p class="case-outcome">Diseñamos el <strong>Cuadro de Categorías y Funciones</strong> con valoración
+                    objetiva por puntos. Elaboramos la política de compensaciones y el diagnóstico de brechas, superando
+                    auditorías de SUNAFIL sin observaciones.</p>
+                  <div class="profile-buttons">
+                    <a class="profile-button whatsapp"
+                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20necesito%20asesoría%20con%20el%20cumplimiento%20de%20la%20ley%2030709."
+                      target="_blank" rel="noreferrer">
+                      <span class="button-icon">WA</span>
+                      Solicitar auditoría
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4: Caso Startups Tech -->
+          <div class="profile-slide" data-index="3">
+            <div class="slide-grid">
+              <div class="case-graphic-wrap beauty-gradient-3">
+                <div class="case-stat">
+                  <span class="stat-value">LATAM</span>
+                  <span class="stat-lbl">Puestos e Ingeniería</span>
+                </div>
+                <div class="market-chart-mock">
+                  <div class="market-grid-line" style="top: 25%"></div>
+                  <div class="market-grid-line" style="top: 50%"></div>
+                  <div class="market-grid-line" style="top: 75%"></div>
+                  <div class="market-trend"></div>
+                  <div class="market-dot" style="left: 20%; top: 68%;"></div>
+                  <div class="market-dot" style="left: 45%; top: 48%;"></div>
+                  <div class="market-dot" style="left: 70%; top: 22%;"></div>
+                </div>
+              </div>
+              <div class="profile-content">
+                <h2>Caso: Estructura Startup Tech</h2>
+                <p>Diseño de bandas para una startup de software con colaboradores remotos en Latinoamérica.</p>
+                <div class="profile-card case-card-detail">
+                  <h3>Competitividad Regional</h3>
+                  <p class="case-outcome">Estructuramos familias de cargos e implementamos <strong>bandas salariales con
+                      progresión por niveles de seniority</strong> ligadas a la valuación de puestos y a benchmarks
+                    salariales de mercado regional (LATAM).</p>
+                  <div class="profile-buttons">
+                    <a class="profile-button whatsapp"
+                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20consultar%20sobre%20dise%C3%B1o%20de%20bandas%20de%20puestos."
+                      target="_blank" rel="noreferrer">
+                      <span class="button-icon">WA</span>
+                      Ver bandas tech
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="profile-arrow next-slide" type="button" aria-label="Siguiente">
+          <span></span>
+        </button>
+
+        <div class="profile-dots" aria-hidden="true">
+          <span class="active" data-index="0"></span>
+          <span data-index="1"></span>
+          <span data-index="2"></span>
+          <span data-index="3"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white" id="servicios">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2>Servicios para ordenar, explicar y optimizar la compensación</h2>
+          <p>
+            Trabajo con datos internos, mercado salarial, metodologías de valuación de puestos y criterios normativos
+            para convertir decisiones sensibles en escenarios comparables, defendibles y accionables.
+          </p>
+        </div>
+
+        <div class="service-grid">
+          <article class="service-card">
+            <div>
+              <span class="service-index">01</span>
+              <h3>Valuación de puestos</h3>
+              <p>Aplicación de metodologías por factores, niveles, responsabilidad, complejidad, impacto y contribución
+                al negocio.</p>
+            </div>
+          </article>
+          <article class="service-card">
+            <div>
+              <span class="service-index">02</span>
+              <h3>Equidad y cumplimiento</h3>
+              <p>Diagnóstico de brechas, dispersión, solapamientos, competitividad de mercado y riesgos normativos o de
+                inequidad.</p>
+            </div>
+          </article>
+          <article class="service-card">
+            <div>
+              <span class="service-index">03</span>
+              <h3>Bandas salariales</h3>
+              <p>Construcción de rangos por familia, grado y mercado, con criterios de progresión y control
+                presupuestario.</p>
+            </div>
+          </article>
+          <article class="service-card">
+            <div>
+              <span class="service-index">04</span>
+              <h3>Optimización salarial</h3>
+              <p>Asignación óptima de incrementos bajo presupuesto mediante programación lineal y simulación de
+                escenarios.</p>
+            </div>
+          </article>
+          <article class="service-card">
+            <div>
+              <span class="service-index">05</span>
+              <h3>Mentoría en Payroll</h3>
+              <p>Acompañamiento en el ciclo de nóminas: T-Registro/PLAME, cálculo de beneficios sociales (CTS, grati,
+                vacaciones), AFPnet y fiscalización SUNAFIL.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="metodo">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2>Una metodología cuantitativa sin perder criterio humano</h2>
+          <p>
+            El modelo ayuda a priorizar, pero la recomendación final incorpora estrategia, cultura, criticidad del
+            talento, cumplimiento normativo y viabilidad operativa.
+          </p>
+        </div>
+
+        <div class="method">
+          <div class="model-panel">
+            <div class="model-tabs">
+              <button class="model-tab-btn active" id="btnShowGraph" type="button">📊 Estructura Salarial</button>
+              <button class="model-tab-btn" id="btnShowSim" type="button">⚙️ Optimizador OPEX Salarial</button>
+            </div>
+
+            <div class="model-tab-content active" id="tabGraph">
+              <canvas id="modelCanvas" aria-label="Visualización de bandas salariales y dispersión"></canvas>
+              <div class="model-caption">
+                <strong>Bandas, brechas y escenarios</strong>
+                <span>Visualización dinámica de dispersión salarial y ajuste a mercado.</span>
+              </div>
+            </div>
+
+            <div class="model-tab-content" id="tabSim">
+              <div class="simulator-container">
+                <h3>Optimizador de Presupuesto Salarial (OPEX)</h3>
+                <p class="sim-intro">Simula la optimización y distribución eficiente de tu presupuesto de personal
+                  (OPEX) aplicando algoritmos de programación lineal en Python. <span
+                    style="color: #05c3df; opacity: 0.85; font-size: 11px; display: block; margin-top: 4px;">✔ Versión
+                    Activa: Botonera y Brechas Dinámicas</span></p>
+
+                <div class="sim-controls">
+                  <div class="control-group">
+                    <label for="simBudget">Presupuesto mensual adicional: <span id="valBudget">S/. 12,000</span></label>
+                    <input type="range" id="simBudget" min="2000" max="30000" step="1000" value="12000">
+                  </div>
+                  <div class="control-group">
+                    <label>Criterio de Asignación:</label>
+                    <div class="strategy-btn-group" role="group" aria-label="Criterio de Asignación">
+                      <button type="button" class="strategy-btn active" data-value="balanced"
+                        title="Criterio Balanceado (Híbrido)">⚖️ Balanceado</button>
+                      <button type="button" class="strategy-btn" data-value="market"
+                        title="Priorizar Ajuste a Mercado (Equidad Externa)">📊 Mercado</button>
+                      <button type="button" class="strategy-btn" data-value="gender"
+                        title="Priorizar Reducción de Brecha de Género (Equidad Interna)">♀️ Género</button>
+                    </div>
+                    <input type="hidden" id="simStrategy" value="balanced">
+                  </div>
+                </div>
+
+                <div class="sim-roles-list">
+                  <div class="sim-role-item" data-role="analyst">
+                    <div class="role-header">
+                      <span><strong>Analista</strong> (10 personas)</span>
+                      <span>S/. 3,200 → <strong class="opt-val">S/. 3,200</strong></span>
+                    </div>
+                    <div class="role-bar-track">
+                      <div class="role-bar bar-market" style="left: 20%; width: 50%;"
+                        title="Banda de Mercado (S/. 3,500 - S/. 5,000)"></div>
+                      <div class="role-bar bar-current" style="width: 25%;" title="Sueldo Actual"></div>
+                      <div class="role-bar bar-optimized" style="width: 25%;" title="Nuevo Sueldo Optimizado"></div>
+                    </div>
+                  </div>
+
+                  <div class="sim-role-item" data-role="coordinator">
+                    <div class="role-header">
+                      <span><strong>Coordinador</strong> (5 personas)</span>
+                      <span>S/. 5,100 → <strong class="opt-val">S/. 5,100</strong></span>
+                    </div>
+                    <div class="role-bar-track">
+                      <div class="role-bar bar-market" style="left: 35%; width: 45%;"
+                        title="Banda de Mercado (S/. 5,500 - S/. 8,000)"></div>
+                      <div class="role-bar bar-current" style="width: 32%;"></div>
+                      <div class="role-bar bar-optimized" style="width: 32%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="sim-role-item" data-role="head">
+                    <div class="role-header">
+                      <span><strong>Jefe</strong> (3 personas)</span>
+                      <span>S/. 8,900 → <strong class="opt-val">S/. 8,900</strong></span>
+                    </div>
+                    <div class="role-bar-track">
+                      <div class="role-bar bar-market" style="left: 55%; width: 35%;"
+                        title="Banda de Mercado (S/. 9,500 - S/. 13,500)"></div>
+                      <div class="role-bar bar-current" style="width: 61%;"></div>
+                      <div class="role-bar bar-optimized" style="width: 61%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="sim-role-item" data-role="manager">
+                    <div class="role-header">
+                      <span><strong>Gerente</strong> (2 personas)</span>
+                      <span>S/. 14,300 → <strong class="opt-val">S/. 14,300</strong></span>
+                    </div>
+                    <div class="role-bar-track">
+                      <div class="role-bar bar-market" style="left: 70%; width: 25%;"
+                        title="Banda de Mercado (S/. 15,000 - S/. 22,000)"></div>
+                      <div class="role-bar bar-current" style="width: 73%;"></div>
+                      <div class="role-bar bar-optimized" style="width: 73%;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sim-results" id="simResults" style="display: flex;">
+                  <div class="result-metric">
+                    <span class="res-num" id="resBenefited">0</span>
+                    <span class="res-lbl">Colaboradores Beneficiados</span>
+                  </div>
+                  <div class="result-metric">
+                    <span class="res-num" id="resGapClosed">0%</span>
+                    <span class="res-lbl">Brecha Total Cerrada</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <article class="step">
+              <span class="step-number">1</span>
+              <div>
+                <h3>Auditoría de datos y normativa</h3>
+                <p>Limpieza de estructura organizacional, cargos, remuneración fija, variables, niveles, familias
+                  ocupacionales y criterios aplicables de cumplimiento.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">2</span>
+              <div>
+                <h3>Diagnóstico salarial</h3>
+                <p>Identificación de inequidades, compa-ratio, penetración en banda, outliers, brechas por rol,
+                  valuación del puesto y posición frente al mercado.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">3</span>
+              <div>
+                <h3>Modelado analítico</h3>
+                <p>Uso de regresión, clustering y modelos de predicción para estimar rangos, familias comparables y
+                  trayectorias salariales.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">4</span>
+              <div>
+                <h3>Optimización con presupuesto</h3>
+                <p>Programación lineal para proponer incrementos que reduzcan brechas, respeten topes y maximicen
+                  impacto organizacional.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white" id="aplicaciones">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2>Aplicaciones directas para decisiones de compensación</h2>
+          <p>
+            La consultoría se traduce en herramientas, tableros y recomendaciones que pueden sostener comités
+            salariales, presupuestos anuales, revisiones de estructura y evidencias de cumplimiento.
+          </p>
+        </div>
+
+        <div class="case-grid">
+          <article class="case-card">
+            <span class="case-tag">Comité salarial</span>
+            <h3>Priorización de ajustes</h3>
+            <p>Ranking de colaboradores o puestos con mayor urgencia de intervención, considerando inequidad, mercado,
+              criticidad y costo.</p>
+          </article>
+          <article class="case-card">
+            <span class="case-tag">Presupuesto anual</span>
+            <h3>Escenarios de incremento</h3>
+            <p>Comparación de escenarios por bolsa disponible, impacto en brechas, cobertura de población y efectos
+              sobre la masa salarial.</p>
+          </article>
+          <article class="case-card">
+            <span class="case-tag">Arquitectura salarial</span>
+            <h3>Gobernanza de bandas</h3>
+            <p>Definición de reglas para ingreso, progresión, promoción, solapamiento entre grados y mantenimiento de
+              competitividad externa.</p>
+          </article>
+          <article class="case-card">
+            <span class="case-tag">Cumplimiento</span>
+            <h3>Soporte normativo</h3>
+            <p>Documentación de criterios de valuación, trazabilidad de decisiones salariales y alertas sobre riesgos de
+              inequidad o incumplimiento.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="capacitaciones">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2>Capacitación salarial y formación de equipos</h2>
+          <p>
+            Talleres teórico-prácticos y programas in-house sobre compensaciones, equidad salarial y automatización
+            financiera para potenciar las capacidades técnicas de tu área de Recursos Humanos.
+          </p>
+        </div>
+
+        <div class="accordion-list">
+          <!-- Curso 1 -->
+          <article class="accordion-item shadow-hover">
+            <button class="accordion-header" type="button" aria-expanded="false">
+              <h3>Taller Especializado: Valuación de Puestos por Puntos</h3>
+              <div class="accordion-icon">+</div>
+            </button>
+            <div class="accordion-content">
+              <div class="syllabus-grid">
+                <div class="syllabus-col">
+                  <h4>Contenido Académico</h4>
+                  <ul>
+                    <li><strong>Métodos cuantitativos</strong> comparativos y sistema de valoración ocupacional por
+                      puntuación.</li>
+                    <li>Selección, definición y ponderación de <strong>factores compensables</strong> (competencias,
+                      esfuerzo, responsabilidades).</li>
+                    <li>Determinación de grados salariales y construcción de la escala de puntos interna.</li>
+                  </ul>
+                </div>
+                <div class="syllabus-col">
+                  <h4>Entregables & Valor</h4>
+                  <ul>
+                    <li>Diseño e instalación de tu propio <strong>Comité de Valuación de Puestos</strong> bajo
+                      principios de equidad.</li>
+                    <li>Plantillas formuladas en Excel para cálculo de puntuaciones y consistencia interna de puestos.
+                    </li>
+                    <li>Casos prácticos adaptados a la estructura organizacional de tu empresa.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Curso 2 -->
+          <article class="accordion-item shadow-hover">
+            <button class="accordion-header" type="button" aria-expanded="false">
+              <h3>Curso de Especialidad: Equidad Salarial & Auditoría Ley 30709</h3>
+              <div class="accordion-icon">+</div>
+            </button>
+            <div class="accordion-content">
+              <div class="syllabus-grid">
+                <div class="syllabus-col">
+                  <h4>Contenido Académico</h4>
+                  <ul>
+                    <li>Análisis detallado de la <strong>Ley 30709</strong> y su reglamento contra la brecha de género
+                      en Perú.</li>
+                    <li>Elaboración paso a paso del <strong>Cuadro de Categorías y Funciones (CCF)</strong> obligatorio.
+                    </li>
+                    <li>Identificación e interpretación de brechas e inequidades salariales inexplicables (Auditoría
+                      SUNAFIL).</li>
+                  </ul>
+                </div>
+                <div class="syllabus-col">
+                  <h4>Entregables & Valor</h4>
+                  <ul>
+                    <li>Estructuración de <strong>Políticas Salariales</strong> con criterios objetivos alineados a la
+                      ley.</li>
+                    <li>Modelos de planes de mitigación de brechas y justificación de excepciones remunerativas.</li>
+                    <li>Preparación técnica y blindaje metodológico para sustentar fiscalizaciones de
+                      <strong>SUNAFIL</strong>.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Curso 3 -->
+          <article class="accordion-item shadow-hover">
+            <button class="accordion-header" type="button" aria-expanded="false">
+              <h3>Taller Práctico: Diseño y Gestión de Bandas Salariales</h3>
+              <div class="accordion-icon">+</div>
+            </button>
+            <div class="accordion-content">
+              <div class="syllabus-grid">
+                <div class="syllabus-col">
+                  <h4>Contenido Académico</h4>
+                  <ul>
+                    <li>Diagnóstico y análisis descriptivo de <strong>equidad interna y competitividad externa</strong>.
+                    </li>
+                    <li>Homologación y lectura técnica de encuestas remunerativas y estudios salariales del mercado.
+                    </li>
+                    <li>Estadística descriptiva aplicada: cálculo de medias, medianas, percentiles y desviaciones.</li>
+                  </ul>
+                </div>
+                <div class="syllabus-col">
+                  <h4>Entregables & Valor</h4>
+                  <ul>
+                    <li>Estructuración de bandas salariales: límites (mínimo, medio, máximo), <strong>amplitud de banda
+                        (spread)</strong> y nivel de solapamiento.</li>
+                    <li>Diseño de políticas de <strong>gobernanza, progresión y promoción</strong> de colaboradores
+                      dentro del rango.</li>
+                    <li>Simulador de posicionamiento individual (compa-ratio y penetración en banda).</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Curso 4 -->
+          <article class="accordion-item shadow-hover">
+            <button class="accordion-header" type="button" aria-expanded="false">
+              <h3>Programa de Especialización: Analítica de Compensaciones y Python</h3>
+              <div class="accordion-icon">+</div>
+            </button>
+            <div class="accordion-content">
+              <div class="syllabus-grid">
+                <div class="syllabus-col">
+                  <h4>Contenido Académico</h4>
+                  <ul>
+                    <li>Introducción al <strong>Data Science & Business Intelligence</strong> enfocado en Recursos
+                      Humanos (People Analytics).</li>
+                    <li>Uso de librerías esenciales en Python (Pandas, NumPy, Scikit-Learn y SciPy) para análisis
+                      salarial.</li>
+                    <li>Modelamiento de regresión y clustering para bandas salariales predictivas y seniority funcional.
+                    </li>
+                  </ul>
+                </div>
+                <div class="syllabus-col">
+                  <h4>Entregables & Valor</h4>
+                  <ul>
+                    <li>Algoritmos de <strong>Optimización Lineal (PuLP)</strong> para asignación de bolsa salarial bajo
+                      presupuestos limitados.</li>
+                    <li>Desarrollo de scripts interactivos de visualización y dispersión de salarios de mercado.</li>
+                    <li>Repositorio con plantillas y código listo para integrar con las bases de datos de tu
+                      organización.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Curso 5 -->
+          <article class="accordion-item shadow-hover">
+            <button class="accordion-header" type="button" aria-expanded="false">
+              <h3>Programa Ejecutivo: Gestión de Nóminas & Payroll Integral</h3>
+              <div class="accordion-icon">+</div>
+            </button>
+            <div class="accordion-content">
+              <div class="syllabus-grid">
+                <div class="syllabus-col">
+                  <h4>Contenido Académico</h4>
+                  <ul>
+                    <li>Normativa laboral peruana aplicada al procesamiento íntegro de la planilla del Régimen General y
+                      Especial.</li>
+                    <li>Altas, bajas y actualizaciones en la plataforma del <strong>T-Registro</strong> (SUNAT).</li>
+                    <li>Liquidación de beneficios y retenciones: Gratificación, CTS, Horas Extras, Renta de Quinta y
+                      pensión (ONP/AFP).</li>
+                  </ul>
+                </div>
+                <div class="syllabus-col">
+                  <h4>Entregables & Valor</h4>
+                  <ul>
+                    <li>Uso práctico del portal <strong>AFPnet</strong> y declaración mensual mediante la **PLAME** (PDT
+                      601).</li>
+                    <li>Plantillas automatizadas para cálculo de indemnizaciones y retenciones judiciales.</li>
+                    <li>Guía de auditoría preventiva contra multas y fiscalización en planillas de pago.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <section class="section white" id="diagnostico-riesgo">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>Evaluador de Riesgo Salarial (Ley 30709)</h2>
+            <p>
+              Realiza una autoevaluación rápida con las 3 preguntas clave que realiza SUNAFIL en inspecciones laborales.
+              Detecta brechas críticas al instante.
+            </p>
+          </div>
+
+          <div class="risk-card">
+            <form class="risk-form" id="riskForm" onsubmit="event.preventDefault();">
+              <div class="risk-question">
+                <p><strong>1. Valuación de Puestos:</strong> ¿Cuentan con un Cuadro de Categorías y Funciones respaldado
+                  por una metodología cuantitativa estructurada (ej. puntos por factores)?</p>
+                <div class="risk-options">
+                  <label><input type="radio" name="q1" value="yes" required> Sí, debidamente sustentado</label>
+                  <label><input type="radio" name="q1" value="no"> No / En proceso informal</label>
+                </div>
+              </div>
+
+              <div class="risk-question">
+                <p><strong>2. Política Remunerativa:</strong> ¿Tienen una política salarial escrita y que haya sido
+                  formalmente comunicada a toda la planilla actual?</p>
+                <div class="risk-options">
+                  <label><input type="radio" name="q2" value="yes" required> Sí, con constancia de entrega</label>
+                  <label><input type="radio" name="q2" value="no"> No, no contamos con política formal</label>
+                </div>
+              </div>
+
+              <div class="risk-question">
+                <p><strong>3. Sustento de Diferencias:</strong> ¿Cuentan con un estudio o auditoría que justifique con
+                  criterios objetivos e individuales cualquier brecha salarial hombre/mujer?</p>
+                <div class="risk-options">
+                  <label><input type="radio" name="q3" value="yes" required> Sí, justificado y sin anomalías</label>
+                  <label><input type="radio" name="q3" value="no"> No / Existen brechas sin sustento escrito</label>
+                </div>
+              </div>
+
+              <div class="risk-actions">
+                <button class="button primary" id="btnCheckRisk" type="button">Calcular Nivel de Riesgo</button>
+              </div>
+            </form>
+
+            <div class="risk-result" id="riskResult" hidden>
+              <div class="result-badge" id="riskBadge">Riesgo Alto</div>
+              <p id="riskText">Tienes falencias críticas que exponen al negocio a sanciones graves ante fiscalizaciones
+                de SUNAFIL.</p>
+              <div class="result-next-step">
+                <a href="#contacto" class="button secondary">Solicitar asesoría para cerrar brechas</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contacto">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>Conversemos sobre tu estructura salarial</h2>
+            <p>
+              Si tienes una base de remuneraciones, un presupuesto por asignar o dudas sobre bandas y equidad, podemos
+              partir con un diagnóstico inicial.
+            </p>
+          </div>
+
+          <div class="contact-layout">
+            <form class="lead-form" id="leadForm" name="lead-consultoria-salarial" method="post" data-netlify="true"
+              netlify-honeypot="website">
+              <input type="hidden" name="form-name" value="lead-consultoria-salarial">
+              <label class="hidden-field">
+                <span>No completar</span>
+                <input type="text" name="website" tabindex="-1" autocomplete="off">
+              </label>
+              <div class="form-grid">
+                <label>
+                  <span>Nombre completo</span>
+                  <input type="text" name="nombre" autocomplete="name" required>
+                </label>
+                <label>
+                  <span>Correo corporativo</span>
+                  <input type="email" name="correo" autocomplete="email" required>
+                </label>
+                <label>
+                  <span>Telefono / WhatsApp</span>
+                  <input type="tel" name="telefono" autocomplete="tel">
+                </label>
+                <label>
+                  <span>Cargo</span>
+                  <input type="text" name="cargo" autocomplete="organization-title">
+                </label>
+                <label>
+                  <span>Empresa</span>
+                  <input type="text" name="empresa" autocomplete="organization" required>
+                </label>
+                <label>
+                  <span>Pais</span>
+                  <input type="text" name="pais" autocomplete="country-name">
+                </label>
+                <label>
+                  <span>Sitio web de la empresa</span>
+                  <input type="url" name="sitio_web" placeholder="https://">
+                </label>
+                <label>
+                  <span>Numero de colaboradores</span>
+                  <select name="colaboradores" required>
+                    <option value="">Selecciona una opcion</option>
+                    <option>Menos de 50</option>
+                    <option>50 a 200</option>
+                    <option>201 a 500</option>
+                    <option>501 a 1000</option>
+                    <option>Mas de 1000</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Servicio de interes</span>
+                  <select name="servicio" required>
+                    <option value="">Selecciona una opcion</option>
+                    <option>Valuacion de puestos</option>
+                    <option>Equidad interna y externa</option>
+                    <option>Cumplimiento normativo salarial</option>
+                    <option>Diseno de bandas salariales</option>
+                    <option>Optimizacion salarial con presupuesto</option>
+                    <option>Estudio salarial con Python / ML</option>
+                    <option>Mentoria y Auditoria de Payroll (Nominas)</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Estado de la informacion salarial</span>
+                  <select name="estado_datos">
+                    <option>Por revisar</option>
+                    <option>Tenemos base salarial consolidada</option>
+                    <option>Tenemos datos parciales</option>
+                    <option>Necesitamos ordenar la informacion</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Plazo estimado</span>
+                  <select name="plazo">
+                    <option>Por definir</option>
+                    <option>Este mes</option>
+                    <option>1 a 3 meses</option>
+                    <option>3 a 6 meses</option>
+                    <option>Mas de 6 meses</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Presupuesto aproximado</span>
+                  <select name="presupuesto">
+                    <option>Por definir</option>
+                    <option>Proyecto exploratorio</option>
+                    <option>Presupuesto aprobado</option>
+                    <option>Buscando estimacion</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Canal preferido de contacto</span>
+                  <select name="canal_contacto">
+                    <option>Correo</option>
+                    <option>WhatsApp</option>
+                    <option>Llamada</option>
+                    <option>Videollamada</option>
+                  </select>
+                </label>
+                <label class="full">
+                  <span>Principal necesidad</span>
+                  <textarea name="necesidad" rows="5"
+                    placeholder="Ejemplo: queremos revisar inequidades internas, crear bandas por puesto y asignar incrementos con una bolsa limitada."
+                    required></textarea>
+                </label>
+              </div>
+
+              <p class="form-note">
+                Al enviar, se preparara un correo con tu consulta. Tambien podras descargar una copia del resumen para
+                adjuntarla o guardarla.
+              </p>
+
+              <label class="consent">
+                <input type="checkbox" name="consentimiento" required>
+                <span>Acepto ser contactado para recibir una propuesta o diagnostico inicial.</span>
+              </label>
+
+              <div class="form-actions">
+                <button class="button primary" type="submit">Enviar consulta</button>
+                <a class="button ghost" id="downloadLead" href="#" download="consulta-salarial.txt" hidden>Descargar
+                  copia</a>
+                <p class="form-status" id="formStatus" aria-live="polite"></p>
+              </div>
+            </form>
+
+            <aside class="contact-panel">
+              <div class="contact-item">
+                <span>Correo</span>
+                <a href="mailto:pmunozms7@outlook.com">pmunozms7@outlook.com</a>
+              </div>
+              <div class="contact-item">
+                <span>LinkedIn</span>
+                <a href="https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302" target="_blank"
+                  rel="noreferrer">LinkedIn de Percy</a>
+              </div>
+              <div class="contact-item">
+                <span>Entregables tipicos</span>
+                <strong>Diagnostico, valuacion de puestos, bandas, matriz normativa, simulador y plan de
+                  ajustes</strong>
+              </div>
+              <div class="contact-item">
+                <span>Herramientas</span>
+                <strong>Python, pandas, scikit-learn, scipy / PuLP</strong>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Consultoría Salarial Analítica</span>
+      <span>Gestión salarial, valuación de puestos, cumplimiento y optimización presupuestaria</span>
+    </div>
+  </footer>
+
+  <script src="script.js?v=2"></script>
+</body>
+
+</html>
