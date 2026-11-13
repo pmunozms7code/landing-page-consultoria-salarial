@@ -128,41 +128,48 @@ a {
 }
 
 .header-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 24px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 clamp(20px, 3.5vw, 56px);
+  box-sizing: border-box;
 }
 
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
-  gap: 24px;
+  height: 74px;
+  width: 100%;
+  gap: clamp(16px, 2.5vw, 40px);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   color: var(--ink-heading);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .brand-monogram {
-  width: 36px;
+  min-width: 52px;
   height: 36px;
+  padding: 0 8px;
   background: var(--mercer-navy);
   color: #FFFFFF;
   font-family: var(--font-body);
   font-weight: 850;
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  display: grid;
-  place-items: center;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 4px;
   position: relative;
   box-shadow: 0 2px 8px rgba(0, 32, 91, 0.2);
+  white-space: nowrap;
 }
 
 .brand-monogram::after {
@@ -210,7 +217,9 @@ a {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  flex: 1;
+  gap: clamp(16px, 2.2vw, 36px);
 }
 
 .nav-link {
@@ -502,7 +511,7 @@ a {
   display: flex;
   align-items: center;
   padding: 135px 24px 90px;
-  background: #07152B;
+  background: #061122;
 }
 
 .hero-video-container {
@@ -520,10 +529,19 @@ a {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.35;
-  filter: contrast(1.1) brightness(0.9);
+  opacity: 0.65;
+  filter: contrast(1.08) brightness(0.98);
   transform-origin: center center;
   will-change: transform;
+}
+
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Azul tenue: permite contemplar claramente el video y el dinamismo gráfico de fondo */
+  background: linear-gradient(135deg, rgba(6, 20, 48, 0.58) 0%, rgba(10, 35, 75, 0.35) 50%, rgba(14, 24, 44, 0.62) 100%);
+  pointer-events: none;
 }
 
 .hero-particles-canvas {
@@ -531,15 +549,7 @@ a {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.hero-video-overlay {
-  position: absolute;
-  inset: 0;
   z-index: 3;
-  background: linear-gradient(135deg, rgba(5, 20, 48, 0.92) 0%, rgba(10, 31, 68, 0.86) 55%, rgba(15, 23, 42, 0.94) 100%);
   pointer-events: none;
 }
 
@@ -560,10 +570,12 @@ a {
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 4px;
-  color: #E2E8F0;
+  color: #FFFFFF;
   font-size: 11.5px;
   font-weight: 750;
   letter-spacing: 0.08em;
@@ -587,14 +599,16 @@ a {
   letter-spacing: -0.02em;
   margin: 0 0 20px;
   max-width: 780px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
 }
 
 .hero-copy {
-  color: #CBD5E1;
+  color: #F1F5F9;
   font-size: clamp(16px, 1.8vw, 18.5px);
   line-height: 1.6;
   max-width: 720px;
   margin-bottom: 34px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
 }
 
 .hero-copy strong {
@@ -2419,17 +2433,21 @@ a {
 }
 
 .footer-brand-mark {
-  width: 36px;
+  min-width: 52px;
   height: 36px;
+  padding: 0 8px;
   border-radius: 4px;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #ffffff;
   background: var(--mercer-navy);
   border: 1px solid var(--mercer-blue);
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
   box-shadow: 0 4px 14px rgba(0, 32, 91, 0.35);
+  white-space: nowrap;
 }
 
 .footer-brand-title {
