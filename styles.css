@@ -786,14 +786,27 @@ a {
 .profile-photo-wrap {
   position: relative;
   width: min(320px, 28vw);
-  aspect-ratio: 0.88;
-  border-radius: 4px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 16px 36px rgba(0, 32, 91, 0.12);
-  border: 1px solid var(--line-firm);
-  background: var(--section-alt);
+  box-shadow: 0 0 0 4px #00A3E0, 0 16px 44px rgba(0, 32, 91, 0.20);
+  border: none;
+  background: transparent;
   justify-self: center;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+[data-theme="dark"] .profile-photo-wrap {
+  box-shadow: 0 0 0 4px #00A3E0, 0 0 30px rgba(0, 163, 224, 0.35), 0 20px 48px rgba(0, 0, 0, 0.65);
+}
+
+.profile-photo-wrap:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 5px #38BDF8, 0 0 36px rgba(56, 189, 248, 0.45), 0 20px 48px rgba(0, 32, 91, 0.25);
 }
 
 .profile-photo {
@@ -801,7 +814,8 @@ a {
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: top center;
+  border-radius: 50%;
+  transform: scale(1.12);
 }
 
 .partner-lead-tag {
@@ -3444,11 +3458,16 @@ a {
     border-radius: 4px;
   }
 
-  .profile-photo-wrap,
   .case-graphic-wrap {
     width: min(320px, 80vw);
     aspect-ratio: 0.95;
     border-radius: 4px;
+  }
+
+  .profile-photo-wrap {
+    width: min(280px, 75vw);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
   }
 
   .profile-content {
