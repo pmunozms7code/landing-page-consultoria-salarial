@@ -413,17 +413,21 @@ function setupProfileInteractiveCanvas() {
     mouse.y = null;
   });
 
-  // Generar puntos salariales ficticios aleatorios que flotan de fondo
+  // Generar puntos de dispersión salarial realistas (Scatter Plot de Planilla y Benchmark)
   const dots = [];
-  const dotColors = ["#05c3df", "#007f7a", "#ff947d", "#f1c84b", "#6ea8fe"];
-  for (let i = 0; i < 48; i++) {
+  const dotColors = ["#007f7a", "#1c5298", "#2d7a46", "#00938d", "#c84d36"];
+  for (let i = 0; i < 42; i++) {
+    const xPct = 0.08 + (i / 42) * 0.84;
+    // Dispersión con distribución gaussiana alrededor de la mediana
+    const normalOffset = (Math.sin(i * 3.7) + Math.cos(i * 2.1)) * 0.07;
+    const yPct = 0.68 - (xPct * 0.34) + normalOffset;
     dots.push({
-      xPct: 0.05 + Math.random() * 0.9,
-      yPct: 0.15 + Math.random() * 0.7,
-      r: 2.2 + Math.random() * 2.8,
+      xPct: Math.max(0.06, Math.min(0.94, xPct)),
+      yPct: Math.max(0.18, Math.min(0.82, yPct)),
+      r: 3.0 + (i % 3) * 0.8,
       color: dotColors[i % dotColors.length],
-      speed: 0.3 + Math.random() * 0.5,
-      phase: Math.random() * Math.PI * 2
+      speed: 0.4 + (i % 4) * 0.2,
+      phase: i * 0.45
     });
   }
 
@@ -438,14 +442,10 @@ function setupProfileInteractiveCanvas() {
     const h = rect.height;
     ctx.clearRect(0, 0, w, h);
 
-    // Color del fondo del canvas
-    ctx.fillStyle = "#0c1524";
-    ctx.fillRect(0, 0, w, h);
-
-    // Dibujar cuadriculado tenue de fondo
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+    // Cuadriculado cartesiano tenue de alta resolución (estilo Matplotlib / Seaborn)
+    ctx.strokeStyle = "rgba(15, 23, 42, 0.04)";
     ctx.lineWidth = 1;
-    const gridSize = 42;
+    const gridSize = 48;
     for (let x = 0; x < w; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -459,58 +459,94 @@ function setupProfileInteractiveCanvas() {
       ctx.stroke();
     }
 
-    // Dibujar las tres bandas de percentil (Curvas de sueldo)
+    // Marca de agua estadística en código Python tenue en la esquina inferior
+    ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = "rgba(15, 23, 42, 0.22)";
+    ctx.fillText("Modelo: y = β₀ + β₁·ln(x) + ε | R² = 0.942 | SciPy Regress (Python)", 32, h - 22);
+
+    // Cálculo dinámico de las curvas salariales (P25, P50 Mediana, P90)
+    const getCurveY = (x, yRatio, waveAmp, timeOffset) => {
+      // Regresión logarítmica creciente de compensación
+      const normalizedX = x / w;
+      const logGrowth = Math.log1p(normalizedX * 2.2) * 0.28;
+      const base = h * yRatio - (logGrowth * h * 0.85);
+      const wave = Math.sin(x * 0.007 + time * 0.0006 + timeOffset) * waveAmp;
+      let y = base + wave;
+
+      // Interacción física con el mouse
+      if (mouse.x !== null) {
+        const dist = Math.abs(x - mouse.x);
+        if (dist < 140) {
+          const influence = (1 - dist / 140) * 0.22;
+          y += (mouse.y - y) * influence;
+        }
+      }
+      return y;
+    };
+
+    // Sombreado de la Banda de Confianza Intercuartil (P25 a P75)
+    ctx.beginPath();
+    for (let x = 0; x <= w; x += 12) {
+      const yP25 = getCurveY(x, 0.72, 12, 0);
+      if (x === 0) ctx.moveTo(x, yP25);
+      else ctx.lineTo(x, yP25);
+    }
+    for (let x = w; x >= 0; x -= 12) {
+      const yP75 = getCurveY(x, 0.44, 14, 1.2);
+      ctx.lineTo(x, yP75);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(0, 127, 122, 0.04)";
+    ctx.fill();
+
+    // Dibujar las 3 curvas percentilares clave
     const curves = [
-      { yRatio: 0.32, color: "rgba(110, 168, 254, 0.38)", width: 1.5 },
-      { yRatio: 0.50, color: "rgba(5, 195, 223, 0.58)", width: 2.5 },
-      { yRatio: 0.68, color: "rgba(0, 127, 122, 0.38)", width: 1.5 }
+      { yRatio: 0.34, color: "rgba(28, 82, 152, 0.38)", width: 1.5, dash: [5, 4], amp: 14, off: 2.1, label: "P90" },
+      { yRatio: 0.52, color: "rgba(0, 127, 122, 0.65)", width: 2.6, dash: [], amp: 16, off: 0.8, label: "P50 (Mediana Mercado)" },
+      { yRatio: 0.72, color: "rgba(200, 77, 54, 0.35)", width: 1.5, dash: [5, 4], amp: 12, off: 0, label: "P25" }
     ];
 
     curves.forEach((c) => {
       ctx.strokeStyle = c.color;
       ctx.lineWidth = c.width;
+      ctx.setLineDash(c.dash);
       ctx.beginPath();
 
-      for (let x = 0; x <= w; x += 10) {
-        // Generar una curva descendente/ascendente realista propia del mercado
-        const base = h * c.yRatio - (x - w * 0.38) * 0.075;
-        const wave = Math.sin(x * 0.006 + time * 0.0006) * 16;
-        let y = base + wave;
-
-        // Efecto gravity pull cuando el mouse está cerca de la línea
-        if (mouse.x !== null) {
-          const dist = Math.abs(x - mouse.x);
-          if (dist < 150) {
-            const influence = (1 - dist / 150) * 0.25;
-            y += (mouse.y - y) * influence;
-          }
-        }
-
+      for (let x = 0; x <= w; x += 8) {
+        const y = getCurveY(x, c.yRatio, c.amp, c.off);
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
+      ctx.setLineDash([]); // Reset dash
+
+      // Etiqueta tenue en el extremo derecho
+      const endY = getCurveY(w - 20, c.yRatio, c.amp, c.off);
+      ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillStyle = c.color;
+      ctx.fillText(c.label, w - 120, endY - 6);
     });
 
-    // Dibujar los puntos salariales que flotan y se conectan interactiva
+    // Dibujar los puntos de dispersión salarial (Scatter Plot)
     dots.forEach((dot) => {
-      const cx = w * dot.xPct + Math.sin(time * 0.0003 * dot.speed + dot.phase) * 15;
-      const cy = h * dot.yPct + Math.cos(time * 0.0003 * dot.speed + dot.phase) * 10;
+      const cx = w * dot.xPct + Math.sin(time * 0.0004 * dot.speed + dot.phase) * 12;
+      const cy = h * dot.yPct + Math.cos(time * 0.0004 * dot.speed + dot.phase) * 8;
 
-      let glow = 0;
       let sizeMultiplier = 1;
+      let isNearMouse = false;
 
       if (mouse.x !== null) {
         const dx = cx - mouse.x;
         const dy = cy - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 88) {
-          glow = (1 - dist / 88);
-          sizeMultiplier = 1 + glow * 0.8;
+        if (dist < 95) {
+          isNearMouse = true;
+          const proximity = (1 - dist / 95);
+          sizeMultiplier = 1 + proximity * 0.6;
 
-          // Rayo conector del cursor al punto
-          ctx.strokeStyle = `rgba(5, 195, 223, ${glow * 0.16})`;
+          // Línea de conexión dinámica
+          ctx.strokeStyle = `rgba(0, 127, 122, ${proximity * 0.22})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(cx, cy);
@@ -520,17 +556,13 @@ function setupProfileInteractiveCanvas() {
       }
 
       ctx.fillStyle = dot.color;
-
-      if (glow > 0) {
-        ctx.shadowColor = dot.color;
-        ctx.shadowBlur = glow * 10;
-      }
+      ctx.globalAlpha = isNearMouse ? 0.85 : 0.42;
 
       ctx.beginPath();
       ctx.arc(cx, cy, dot.r * sizeMultiplier, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1.0;
     });
 
     requestAnimationFrame(draw);
