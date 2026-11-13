@@ -706,7 +706,7 @@ function syncContactLinks() {
 function setupScrollAnimations() {
   if (prefersReduced) return;
   const cards = document.querySelectorAll(
-    ".service-card, .case-card, .step, .contact-item, .accordion-item, .sector-card, .testimonial-card, .nda-guarantee-card, .corp-badge, .video-feat-item"
+    ".service-card, .case-card, .step, .contact-item, .accordion-item, .sector-card, .testimonial-card, .nda-guarantee-card, .corp-badge"
   );
 
   const observer = new IntersectionObserver((entries) => {
@@ -869,75 +869,84 @@ function setupRiskEvaluator() {
   });
 }
 
-// CONTROLADOR DE VIDEO EJECUTIVO CON AUTOPLAY Y ZOOM EN SCROLL
-function setupVideoShowcase() {
-  const video = document.getElementById("consultingShowcaseVideo");
-  const container = document.getElementById("executiveVideoContainer");
-  const section = document.getElementById("metodologia-video");
-  if (!video || !container) return;
+// CONTROLADOR DE VIDEO DE FONDO CON EFECTO ZOOM Y REPRODUCCIÓN EN SCROLL
+function setupHeroBackgroundVideo() {
+  const video = document.getElementById("heroBgVideo");
+  const hero = document.getElementById("inicio");
+  const soundBtn = document.getElementById("heroVideoSoundBtn");
+  if (!video || !hero) return;
 
-  const playPauseBtn = document.getElementById("videoPlayPauseBtn");
-  const iconPause = playPauseBtn?.querySelector(".icon-pause");
-  const iconPlay = playPauseBtn?.querySelector(".icon-play");
-  const audioToggle = document.getElementById("videoAudioToggle");
-  const iconMuted = audioToggle?.querySelector(".icon-muted");
-  const iconUnmuted = audioToggle?.querySelector(".icon-unmuted");
-  const audioLabel = document.getElementById("videoAudioLabel");
-  const progressBar = document.getElementById("videoProgressBar");
+  // Autoplay silenciado garantizado por defecto
+  video.muted = true;
+  const playPromise = video.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      // Si el navegador bloquea autoplay hasta interacción, reintentar al primer scroll o toque
+      const startOnInteraction = () => {
+        video.play().catch(() => {});
+        window.removeEventListener("scroll", startOnInteraction);
+        window.removeEventListener("touchstart", startOnInteraction);
+        window.removeEventListener("click", startOnInteraction);
+      };
+      window.addEventListener("scroll", startOnInteraction, { passive: true, once: true });
+      window.addEventListener("touchstart", startOnInteraction, { passive: true, once: true });
+      window.addEventListener("click", startOnInteraction, { once: true });
+    });
+  }
 
-  // Autoplay inteligente al entrar en el viewport y pausa al salir
-  const videoObserver = new IntersectionObserver((entries) => {
+  // Pausar reproducción cuando el usuario se desplaza más abajo para optimizar rendimiento
+  const heroObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        container.classList.add("is-visible");
-        // Autoplay silenciado por defecto para compatibilidad total con navegadores
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              if (iconPause && iconPlay) {
-                iconPause.style.display = "block";
-                iconPlay.style.display = "none";
-              }
-            })
-            .catch(() => {
-              // Si el navegador bloquea autoplay, permitimos interacción manual
-              if (iconPause && iconPlay) {
-                iconPause.style.display = "none";
-                iconPlay.style.display = "block";
-              }
-            });
-        }
+        video.play().catch(() => {});
       } else {
         video.pause();
-        if (iconPause && iconPlay) {
-          iconPause.style.display = "none";
-          iconPlay.style.display = "block";
-        }
       }
     });
   }, {
-    threshold: 0.25,
-    rootMargin: "0px 0px -30px 0px"
+    threshold: 0.05
   });
+  heroObserver.observe(hero);
 
-  videoObserver.observe(video);
-
-  // Efecto dinámico de Zoom según el progreso de Scroll
+  // EFECTO DINÁMICO DE ZOOM Y REPRODUCCIÓN AL HACER SCROLL
   if (!prefersReduced) {
     let isTicking = false;
+    let lastScrollY = window.scrollY;
+    let rateTimeout = null;
+
     window.addEventListener("scroll", () => {
       if (!isTicking) {
         window.requestAnimationFrame(() => {
-          if (section && video) {
-            const rect = section.getBoundingClientRect();
-            const winH = window.innerHeight;
-            if (rect.top < winH && rect.bottom > 0) {
-              const progress = Math.min(1, Math.max(0, (winH - rect.top) / (winH + rect.height)));
-              // Zoom suave progresivo de 1.00 a 1.12
-              const currentZoom = 1.0 + (progress * 0.12);
-              video.style.transform = `scale(${currentZoom.toFixed(3)})`;
+          const scrollY = window.scrollY;
+          const heroHeight = hero.offsetHeight || window.innerHeight;
+
+          if (scrollY <= heroHeight * 1.5) {
+            // Progreso relativo al scroll en la cabecera (0 a 1)
+            const progress = Math.min(1.4, scrollY / heroHeight);
+
+            // ZOOM CONTINUO: escala cinematográfica suave de 1.00 hasta 1.38x
+            const scale = 1.0 + (progress * 0.38);
+
+            // Parallax sutil hacia abajo que añade tridimensionalidad y profundidad
+            const translateY = scrollY * 0.28;
+
+            video.style.transform = `scale(${scale.toFixed(3)}) translateY(${translateY.toFixed(1)}px)`;
+
+            // Asegurar reproducción activa mientras se navega
+            if (video.paused) {
+              video.play().catch(() => {});
             }
+
+            // Aceleración de velocidad según el impulso del scroll
+            const delta = Math.abs(scrollY - lastScrollY);
+            if (delta > 3) {
+              video.playbackRate = Math.min(1.8, 1.0 + (delta * 0.015));
+              clearTimeout(rateTimeout);
+              rateTimeout = setTimeout(() => {
+                video.playbackRate = 1.0;
+              }, 120);
+            }
+            lastScrollY = scrollY;
           }
           isTicking = false;
         });
@@ -946,56 +955,32 @@ function setupVideoShowcase() {
     }, { passive: true });
   }
 
-  // Control interactivo de Play / Pause
-  if (playPauseBtn) {
-    playPauseBtn.addEventListener("click", () => {
-      if (video.paused) {
-        video.play().then(() => {
-          if (iconPause) iconPause.style.display = "block";
-          if (iconPlay) iconPlay.style.display = "none";
-        }).catch(() => {});
-      } else {
-        video.pause();
-        if (iconPause) iconPause.style.display = "none";
-        if (iconPlay) iconPlay.style.display = "block";
-      }
-    });
-  }
+  // Toggle de Sonido (1 clic para activar o silenciar audio con feedback visual)
+  if (soundBtn) {
+    const iconMuted = soundBtn.querySelector(".icon-muted");
+    const iconUnmuted = soundBtn.querySelector(".icon-unmuted");
+    const soundLabel = document.getElementById("heroSoundLabel");
 
-  // Control de Audio (Mute / Unmute con feedback visual)
-  if (audioToggle) {
-    audioToggle.addEventListener("click", () => {
+    soundBtn.addEventListener("click", () => {
       video.muted = !video.muted;
       if (video.muted) {
         if (iconMuted) iconMuted.style.display = "block";
         if (iconUnmuted) iconUnmuted.style.display = "none";
-        if (audioLabel) audioLabel.textContent = "Activar sonido";
-        audioToggle.style.background = "rgba(0, 127, 122, 0.9)";
+        if (soundLabel) soundLabel.textContent = "Activar sonido";
+        soundBtn.style.background = "rgba(8, 15, 24, 0.78)";
       } else {
         if (iconMuted) iconMuted.style.display = "none";
         if (iconUnmuted) iconUnmuted.style.display = "block";
-        if (audioLabel) audioLabel.textContent = "Silenciar";
-        audioToggle.style.background = "#225ea8";
-        // Si estaba pausado al activar sonido, reanudar reproducción
+        if (soundLabel) soundLabel.textContent = "Silenciar";
+        soundBtn.style.background = "rgba(0, 127, 122, 0.95)";
         if (video.paused) {
-          video.play().then(() => {
-            if (iconPause) iconPause.style.display = "block";
-            if (iconPlay) iconPlay.style.display = "none";
-          }).catch(() => {});
+          video.play().catch(() => {});
         }
       }
     });
   }
 
-  // Barra de progreso de reproducción sincronizada
-  video.addEventListener("timeupdate", () => {
-    if (progressBar && video.duration) {
-      const pct = (video.currentTime / video.duration) * 100;
-      progressBar.style.width = `${pct}%`;
-    }
-  });
-
-  // Al finalizar video (loop infinito continuo)
+  // Al finalizar video, reiniciar en bucle perfecto
   video.addEventListener("ended", () => {
     video.currentTime = 0;
     video.play().catch(() => {});
@@ -1012,7 +997,7 @@ function initializeApp() {
   setupProfileInteractiveCanvas();
   setupAccordion();
   setupRiskEvaluator();
-  setupVideoShowcase();
+  setupHeroBackgroundVideo();
   animate(performance.now());
 }
 
