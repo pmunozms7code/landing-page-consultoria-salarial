@@ -59,31 +59,35 @@
 </head>
 
 <body>
-  <!-- Header con Navbar Flotante Glassmorphic (Apple / Stripe Style) -->
+  <!-- Header Corporativo Ejecutivo (Estética Mercer + Deloitte + Accenture) -->
   <header class="site-header" id="siteHeader">
-    <div class="header-floating-wrap">
+    <div class="header-container">
       <nav class="nav" aria-label="Navegación principal">
         <a class="brand" href="#inicio" aria-label="Inicio">
-          <span class="brand-mark">CS</span>
-          <span class="brand-name">Consultoría Salarial & Tributaria</span>
+          <span class="brand-monogram">PMS</span>
+          <div class="brand-info">
+            <span class="brand-name">PERCY MUÑOZ SIERRA</span>
+            <span class="brand-practice">Total Rewards &bull; People Analytics &bull; Asesoría Tributaria</span>
+          </div>
         </a>
         
         <div class="nav-links" id="navLinks">
-          <a href="#servicios" class="nav-link">Servicios</a>
-          <a href="#metodo" class="nav-link">Método</a>
-          <a href="#capacitaciones" class="nav-link">Capacitaciones</a>
+          <a href="#servicios" class="nav-link">Prácticas</a>
+          <a href="#metodo" class="nav-link">Metodología & Analytics</a>
+          <a href="#diagnostico" class="nav-link">Casos de Estudio</a>
+          <a href="#capacitaciones" class="nav-link">In-Company</a>
+          <a href="#diagnostico-riesgo" class="nav-link">Auditoría Ley 30709</a>
           <a href="#confianza" class="nav-link">Sectores</a>
-          <a href="#diagnostico-riesgo" class="nav-link">Test Ley 30709</a>
         </div>
 
         <div class="nav-actions">
-          <!-- Toggle Dark Mode / Light Mode -->
+          <!-- Conmutador de Modo Oscuro / Claro -->
           <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Cambiar a modo claro u oscuro" title="Cambiar tema">
-            <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
 
-          <a class="button primary nav-cta-btn" href="#contacto">Diagnóstico</a>
+          <a class="button corporate-cta nav-cta-btn" href="#contacto">Solicitar Diagnóstico</a>
 
           <!-- Botón Hamburguesa para Mobile -->
           <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú de navegación" aria-expanded="false">
@@ -96,9 +100,22 @@
     </div>
   </header>
 
+  <!-- Menú Drawer para Dispositivos Móviles -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-nav-links">
+      <a href="#servicios">Prácticas de Consultoría</a>
+      <a href="#metodo">Metodología & Analytics</a>
+      <a href="#diagnostico">Casos de Estudio Reales</a>
+      <a href="#capacitaciones">Capacitaciones In-Company</a>
+      <a href="#diagnostico-riesgo">Auditoría Ley 30709</a>
+      <a href="#confianza">Sectores y Casuísticas</a>
+      <a href="#contacto" class="button corporate-cta">Solicitar Diagnóstico Institucional</a>
+    </div>
+  </div>
+
   <main>
     <section class="hero hero-video-bg" id="inicio">
-      <!-- Video de fondo cinematográfico de alta resolución con efectos de zoom y reproducción dinámica en scroll -->
+      <!-- Fondo audiovisual corporativo sobrio (estilo Accenture / Deloitte Insights) -->
       <div class="hero-video-container" aria-hidden="true">
         <video id="heroBgVideo" class="hero-bg-video" 
                src="Multimedia/742507467_1794584507730713.mp4" 
@@ -108,43 +125,43 @@
         <div class="hero-video-overlay"></div>
       </div>
 
-      <!-- Botón flotante para activar/silenciar el audio del video de fondo -->
-      <button type="button" class="hero-video-sound-btn" id="heroVideoSoundBtn" aria-label="Activar o silenciar audio del video" title="Activar sonido">
-        <svg class="icon-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-        <svg class="icon-unmuted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        <span id="heroSoundLabel">Activar sonido</span>
-      </button>
-
       <div class="hero-inner">
-        <div>
-          <p class="eyebrow">Compensaciones, Cumplimiento y Normativa Peruana con Evidencia</p>
-          <h1>Optimiza tu presupuesto salarial y blinda tu empresa ante SUNAFIL y SUNAT</h1>
+        <div class="hero-main-content">
+          <div class="hero-practice-tag">
+            <span class="tag-dot"></span>
+            <span>PRÁCTICA DE HUMAN CAPITAL &bull; TOTAL REWARDS &bull; DERECHO TRIBUTARIO-LABORAL</span>
+          </div>
+          <h1>Estructuración Salarial, Cumplimiento de la Ley 30709 y Optimización Contable-Tributaria</h1>
           <p class="hero-copy">
-            Diseño bandas salariales, valuación de puestos y cumplimiento de la Ley 30709, combinados con consultoría contable-tributaria bajo normas peruanas (NIIF y fiscalizaciones SUNAT) y optimización cuantitativa en Python.
+            Asesoría cuantitativa senior para Directorios, Gerencias de Gestión Humana y Direcciones de Finanzas en el Perú. Diseñamos bandas salariales competitivas, valuación objetiva de puestos por factores y blindaje ante fiscalizaciones de <strong>SUNAFIL</strong> y <strong>SUNAT</strong> con analítica en Python.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#contacto">Solicitar diagnóstico gratuito</a>
-            <a class="button secondary hero-wa-btn" href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quisiera%20solicitar%20un%20diagn%C3%B3stico%20de%20compensaciones%20y%20tributario%20para%20mi%20empresa." target="_blank" rel="noreferrer">
+            <a class="button corporate-primary" href="#contacto">Solicitar Diagnóstico Institucional</a>
+            <a class="button corporate-secondary hero-wa-btn" href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quisiera%20agendar%20una%20consulta%20institucional%20sobre%20compensaciones%20y%20normativa%20salarial." target="_blank" rel="noreferrer">
               <span class="hero-wa-content">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
-                Escribir por WhatsApp
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                Conversar con el Consultor
               </span>
             </a>
           </div>
         </div>
-        <aside class="hero-proof" aria-label="Indicadores de trabajo">
+
+        <aside class="hero-proof" aria-label="Indicadores Institucionales">
           <div class="metric-strip">
             <div class="metric">
               <strong class="counter-val" data-target="100" data-suffix="%">100%</strong>
-              <span>blindaje SUNAFIL & SUNAT</span>
+              <span class="metric-title">Conformidad SUNAFIL</span>
+              <span class="metric-sub">Ley 30709 &bull; Valuación Objetiva</span>
             </div>
             <div class="metric">
-              <strong>OPEX</strong>
-              <span>optimización con analítica</span>
+              <strong>OPEX &bull; Python</strong>
+              <span class="metric-title">Optimización Cuantitativa</span>
+              <span class="metric-sub">Modelos de Programación Lineal</span>
             </div>
             <div class="metric">
-              <strong>NIIF</strong>
-              <span>normas peruanas y tributación</span>
+              <strong>SUNAT &bull; NIIF</strong>
+              <span class="metric-title">Criterio Tributario & Fiscal</span>
+              <span class="metric-sub">Deducción de planilla y Renta 5ta</span>
             </div>
           </div>
         </aside>
@@ -168,18 +185,19 @@
                 <img src="profile-photo.png" alt="Percy Muñoz Sierra" class="profile-photo">
               </div>
               <div class="profile-content">
-                <h2>¿Listo para auditar tu estructura?</h2>
-                <p>Solicita un <strong>Diagnóstico Express gratuito</strong> de una muestra de puestos de tu empresa.
-                </p>
+                <span class="partner-lead-tag">Práctica Human Capital &bull; Total Rewards & Tributación Laboral</span>
+                <h2>¿Listo para auditar su estructura salarial?</h2>
+                <p>Solicite un <strong>Diagnóstico Preliminar sin costo</strong> sobre una muestra representativa de puestos clave de su empresa.</p>
                 <div class="profile-card">
                   <h3>Percy Muñoz Sierra</h3>
-                  <p>Consultor en Compensaciones | People Analytics</p>
+                  <p class="partner-role-title">Consultor Principal en Compensaciones & People Analytics</p>
+                  <p class="partner-role-desc">Ex-responsable de Compensaciones, Estructuras y Nóminas. Especialista en modelamiento cuantitativo (Python / SciPy), cumplimiento SUNAFIL (Ley 30709) y fiscalidad de planillas (SUNAT - NIIF).</p>
                   <div class="profile-buttons">
                     <a class="profile-button whatsapp"
-                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20solicitar%20un%20diagn%C3%B3stico%20express%20de%20mi%20estructura%20salarial."
+                      href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quisiera%20solicitar%20un%20diagn%C3%B3stico%20preliminar%20de%20nuestra%20estructura%20salarial."
                       target="_blank" rel="noreferrer">
                       <span class="button-icon">WA</span>
-                      Escribirme por WhatsApp
+                      Solicitar Diagnóstico Institucional
                     </a>
                     <a class="profile-button linkedin"
                       href="https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302" target="_blank"
@@ -217,14 +235,11 @@
                 </div>
               </div>
               <div class="profile-content">
-                <h2>Caso de Éxito: Sector Retail</h2>
-                <p>Optimización presupuestaria de incrementos salariales anuales en una planilla retail de 850
-                  colaboradores.</p>
+                <h2>Caso de Éxito: Sector Retail & Distribución</h2>
+                <p>Optimización presupuestaria de incrementos salariales anuales en una planilla retail de 850 colaboradores.</p>
                 <div class="profile-card case-card-detail">
-                  <h3>Reducción de Inequidades</h3>
-                  <p class="case-outcome">Optimizamos una bolsa de <strong>S/. 350K</strong> al año para 850
-                    colaboradores, logrando reducir la brecha salarial inexplicable de género en un 35% sin sobrepasar
-                    el presupuesto y alineados a la estrategia de retención.</p>
+                  <h3>Reducción de Inequidades & Control de Costos</h3>
+                  <p class="case-outcome">Optimizamos una bolsa de <strong>S/. 350K anuales</strong> para 850 colaboradores mediante programación lineal, logrando reducir la brecha salarial inexplicable de género en un <strong>35%</strong> sin desbordar el presupuesto y alineados a la retención de talento crítico.</p>
                   <div class="profile-buttons">
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20conocer%20m%C3%A1s%20sobre%20el%20caso%20de%20éxito%20Retail."
@@ -253,20 +268,17 @@
                 </div>
               </div>
               <div class="profile-content">
-                <h2>Caso: Auditoría Ley 30709</h2>
-                <p>Implementación de la normativa peruana de igualdad salarial en empresa industrial de 1,200
-                  trabajadores.</p>
+                <h2>Auditoría & Blindaje: Ley 30709</h2>
+                <p>Implementación integral de la normativa peruana de igualdad remunerativa en empresa industrial de 1,200 colaboradores.</p>
                 <div class="profile-card case-card-detail">
-                  <h3>Blindaje y Estructuración</h3>
-                  <p class="case-outcome">Diseñamos el <strong>Cuadro de Categorías y Funciones</strong> con valoración
-                    objetiva por puntos. Elaboramos la política de compensaciones y el diagnóstico de brechas, superando
-                    auditorías de SUNAFIL sin observaciones.</p>
+                  <h3>Valuación Objetiva & Cuadro de Categorías</h3>
+                  <p class="case-outcome">Diseñamos el <strong>Cuadro de Categorías y Funciones</strong> con valoración objetiva por puntos. Elaboramos la política de compensaciones y el diagnóstico de brechas, superando auditorías de SUNAFIL con 100% de conformidad.</p>
                   <div class="profile-buttons">
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20necesito%20asesoría%20con%20el%20cumplimiento%20de%20la%20ley%2030709."
                       target="_blank" rel="noreferrer">
                       <span class="button-icon">WA</span>
-                      Solicitar auditoría
+                      Solicitar auditoría preventiva
                     </a>
                   </div>
                 </div>
@@ -293,19 +305,17 @@
                 </div>
               </div>
               <div class="profile-content">
-                <h2>Caso: Estructura Startup Tech</h2>
-                <p>Diseño de bandas para una startup de software con colaboradores remotos en Latinoamérica.</p>
+                <h2>Estructura Salarial: Startups & Tech LATAM</h2>
+                <p>Diseño y calibración de bandas salariales para empresa de tecnología con colaboradores remotos en 4 países.</p>
                 <div class="profile-card case-card-detail">
-                  <h3>Competitividad Regional</h3>
-                  <p class="case-outcome">Estructuramos familias de cargos e implementamos <strong>bandas salariales con
-                      progresión por niveles de seniority</strong> ligadas a la valuación de puestos y a benchmarks
-                    salariales de mercado regional (LATAM).</p>
+                  <h3>Competitividad Regional & Progresión de Carrera</h3>
+                  <p class="case-outcome">Estructuramos familias de cargos e implementamos <strong>bandas salariales con progresión por niveles de seniority</strong> ligadas a la valuación de puestos y a benchmarks salariales de mercado regional (LATAM).</p>
                   <div class="profile-buttons">
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20consultar%20sobre%20dise%C3%B1o%20de%20bandas%20de%20puestos."
                       target="_blank" rel="noreferrer">
                       <span class="button-icon">WA</span>
-                      Ver bandas tech
+                      Consultar bandas tech
                     </a>
                   </div>
                 </div>
@@ -401,25 +411,24 @@
         <div class="method">
           <div class="model-panel">
             <div class="model-tabs">
-              <button class="model-tab-btn active" id="btnShowGraph" type="button">📊 Estructura Salarial</button>
-              <button class="model-tab-btn" id="btnShowSim" type="button">⚙️ Optimizador OPEX Salarial</button>
+              <button class="model-tab-btn active" id="btnShowGraph" type="button">Bandas & Estructura por Grados</button>
+              <button class="model-tab-btn" id="btnShowSim" type="button">Optimizador Presupuestal OPEX (Python)</button>
             </div>
 
             <div class="model-tab-content active" id="tabGraph">
               <canvas id="modelCanvas" aria-label="Visualización de bandas salariales y dispersión"></canvas>
               <div class="model-caption">
-                <strong>Bandas, brechas y escenarios</strong>
-                <span>Visualización dinámica de dispersión salarial y ajuste a mercado.</span>
+                <strong>Bandas Salariales y Curva de Política de Mercado</strong>
+                <span>Estructura de grados Hay / Mercer con dispersión interna de puestos y calibración de midpoint.</span>
               </div>
             </div>
 
             <div class="model-tab-content" id="tabSim">
               <div class="simulator-container">
                 <h3>Optimizador de Presupuesto Salarial (OPEX)</h3>
-                <p class="sim-intro">Simula la optimización y distribución eficiente de tu presupuesto de personal
-                  (OPEX) aplicando algoritmos de programación lineal en Python. <span
-                    style="color: #05c3df; opacity: 0.85; font-size: 11px; display: block; margin-top: 4px;">✔ Versión
-                    Activa: Botonera y Brechas Dinámicas</span></p>
+                <p class="sim-intro">Simulación analítica de incrementos salariales mediante modelos de programación lineal en Python (PuLP / SciPy).
+                  <span class="sim-tag">✔ Algoritmo Cuantitativo &bull; Optimización de Brechas & Control Presupuestal</span>
+                </p>
 
                 <div class="sim-controls">
                   <div class="control-group">
@@ -430,11 +439,11 @@
                     <label>Criterio de Asignación:</label>
                     <div class="strategy-btn-group" role="group" aria-label="Criterio de Asignación">
                       <button type="button" class="strategy-btn active" data-value="balanced"
-                        title="Criterio Balanceado (Híbrido)">⚖️ Balanceado</button>
+                        title="Criterio Balanceado (Híbrido Mercado + Ley 30709)">Balanceado</button>
                       <button type="button" class="strategy-btn" data-value="market"
-                        title="Priorizar Ajuste a Mercado (Equidad Externa)">📊 Mercado</button>
+                        title="Priorizar Ajuste a Mercado (Equidad Externa)">Mercado</button>
                       <button type="button" class="strategy-btn" data-value="gender"
-                        title="Priorizar Reducción de Brecha de Género (Equidad Interna)">♀️ Género</button>
+                        title="Priorizar Cierre de Brechas Ley 30709 (Equidad Interna)">Ley 30709</button>
                     </div>
                     <input type="hidden" id="simStrategy" value="balanced">
                   </div>

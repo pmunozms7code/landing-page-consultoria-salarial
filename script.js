@@ -60,68 +60,124 @@ function setupModelCanvas() {
     if (!canvas.offsetParent || w === 0 || h === 0) return;
 
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "#111a22";
+    ctx.fillStyle = "#0A1118";
     ctx.fillRect(0, 0, w, h);
 
-    const left = 44;
-    const bottom = h - 118;
-    const top = 42;
-    const right = w - 34;
+    const left = 68;
+    const bottom = h - 90;
+    const top = 36;
+    const right = w - 36;
+    const plotW = right - left;
+    const plotH = bottom - top;
 
-    ctx.globalAlpha = 0.25;
-    ctx.strokeStyle = "#ffffff";
+    // Cuadriculado cartesiano de bandas salariales
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.07)";
     ctx.lineWidth = 1;
-    for (let y = top; y <= bottom; y += 46) {
+
+    // Líneas horizontales de salario (Y)
+    const yTicks = [
+      { val: "S/. 24,000", ratio: 0.08 },
+      { val: "S/. 18,000", ratio: 0.28 },
+      { val: "S/. 12,000", ratio: 0.50 },
+      { val: "S/. 7,000",  ratio: 0.72 },
+      { val: "S/. 3,200",  ratio: 0.92 }
+    ];
+
+    ctx.font = "10.5px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = "rgba(226, 232, 240, 0.60)";
+    ctx.textAlign = "right";
+
+    yTicks.forEach(tick => {
+      const y = top + plotH * tick.ratio;
       ctx.beginPath();
       ctx.moveTo(left, y);
       ctx.lineTo(right, y);
       ctx.stroke();
-    }
-
-    const families = [
-      { x: 0.18, c: "#59c4bd" },
-      { x: 0.38, c: "#6ea8fe" },
-      { x: 0.58, c: "#ff947d" },
-      { x: 0.78, c: "#f1c84b" }
-    ];
-
-    families.forEach((fam, idx) => {
-      const cx = left + (right - left) * fam.x;
-      const bandTop = top + 46 + idx * 18;
-      const bandHeight = 118 + idx * 16;
-      ctx.globalAlpha = 0.18;
-      ctx.fillStyle = fam.c;
-      ctx.fillRect(cx - 42, bandTop, 84, bandHeight);
-      ctx.globalAlpha = 0.84;
-      ctx.strokeStyle = fam.c;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(cx - 42, bandTop, 84, bandHeight);
-
-      for (let j = 0; j < 16; j += 1) {
-        const jitter = Math.sin(time * 0.001 + j * 1.7 + idx) * 14;
-        const y = bandTop + 12 + ((j * 31) % Math.max(36, bandHeight - 24));
-        ctx.globalAlpha = 0.82;
-        ctx.fillStyle = fam.c;
-        ctx.beginPath();
-        ctx.arc(cx + jitter, y, 4, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      ctx.fillText(tick.val, left - 10, y + 4);
     });
 
-    ctx.globalAlpha = 0.95;
-    ctx.strokeStyle = "#ffffff";
+    // 4 Grados Salariales Estructurados (Metodología Hay / Mercer)
+    const grades = [
+      { label: "G10: Analistas", xPct: 0.14, min: 0.90, mid: 0.78, max: 0.66, color: "#008766" },
+      { label: "G12: Especialistas", xPct: 0.38, min: 0.74, mid: 0.60, max: 0.46, color: "#005A9C" },
+      { label: "G14: Jefaturas", xPct: 0.62, min: 0.54, mid: 0.40, max: 0.26, color: "#4338CA" },
+      { label: "G16: Gerencias", xPct: 0.86, min: 0.34, mid: 0.20, max: 0.06, color: "#3B82F6" }
+    ];
+
+    const bandWidth = Math.min(84, plotW * 0.19);
+
+    // Dibujar las 4 bandas salariales rectangulares con Min, Midpoint y Max
+    grades.forEach((g) => {
+      const cx = left + plotW * g.xPct;
+      const bTop = top + plotH * g.max;
+      const bBottom = top + plotH * g.min;
+      const bHeight = bBottom - bTop;
+      const bMid = top + plotH * g.mid;
+
+      // Caja de la banda (rango salarial)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+      ctx.fillRect(cx - bandWidth / 2, bTop, bandWidth, bHeight);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.20)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(cx - bandWidth / 2, bTop, bandWidth, bHeight);
+
+      // Línea de Midpoint (P50 Mercado) dentro de la banda
+      ctx.strokeStyle = g.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - bandWidth / 2, bMid);
+      ctx.lineTo(cx + bandWidth / 2, bMid);
+      ctx.stroke();
+
+      // Puntos de colaboradores dentro del grado
+      for (let j = 0; j < 8; j++) {
+        const jitterX = Math.sin(time * 0.0008 + j * 1.7) * (bandWidth * 0.26);
+        const yPct = g.min - (j / 8) * (g.min - g.max) + (Math.cos(j * 3.1) * 0.025);
+        const y = top + plotH * yPct;
+
+        ctx.fillStyle = g.color;
+        ctx.beginPath();
+        ctx.arc(cx + jitterX, y, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Etiqueta del grado en eje X
+      ctx.font = "10.5px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      ctx.textAlign = "center";
+      ctx.fillText(g.label, cx, bottom + 20);
+    });
+
+    // Línea conectora de Midpoint de Mercado (Curva de Política Salarial)
+    ctx.strokeStyle = "rgba(0, 90, 156, 0.80)";
     ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
     ctx.beginPath();
-    ctx.moveTo(left, bottom);
-    ctx.lineTo(right, bottom);
+    grades.forEach((g, idx) => {
+      const cx = left + plotW * g.xPct;
+      const cy = top + plotH * g.mid;
+      if (idx === 0) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    });
     ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Título de los Ejes
+    ctx.textAlign = "left";
+    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+    ctx.fillText("▲ Remuneración Básica Mensual (S/.)", left, top - 12);
+    ctx.textAlign = "right";
+    ctx.fillText("Línea de Mediana de Mercado (Midpoint P50) ──", right, top - 12);
+
+    // Ejes cartesianos
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(left, top);
     ctx.lineTo(left, bottom);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(left, top);
-    ctx.lineTo(right, top);
+    ctx.lineTo(right, bottom);
     ctx.stroke();
   }
 
@@ -338,7 +394,7 @@ function setupSimulator() {
       const maxSalaryValue = 20500;
       const newPctWidth = Math.min(100, (finalSalary / maxSalaryValue) * 100);
       barOptimizedEl.style.width = `${newPctWidth}%`;
-      barOptimizedEl.style.background = inc > 0 ? "linear-gradient(90deg, #007f7a, #00b0ff)" : "transparent";
+      barOptimizedEl.style.background = inc > 0 ? "linear-gradient(90deg, #005A9C, #008766)" : "transparent";
     }
 
     // Mostrar y actualizar panel de las métricas de resultado final
@@ -434,7 +490,7 @@ function setupProfileInteractiveCanvas() {
 
   // Generar puntos de dispersión salarial realistas (Scatter Plot de Planilla y Benchmark)
   const dots = [];
-  const dotColors = ["#007f7a", "#1c5298", "#2d7a46", "#00938d", "#c84d36"];
+  const dotColors = ["#00205B", "#005A9C", "#008766", "#334155", "#854D0E"];
   for (let i = 0; i < 42; i++) {
     const xPct = 0.08 + (i / 42) * 0.84;
     // Dispersión con distribución gaussiana alrededor de la mediana
@@ -455,66 +511,117 @@ function setupProfileInteractiveCanvas() {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Cuadriculado cartesiano tenue de alta resolución (estilo Matplotlib / Seaborn)
-    ctx.strokeStyle = "rgba(15, 23, 42, 0.04)";
-    ctx.lineWidth = 1;
-    const gridSize = 48;
-    for (let x = 0; x < w; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    for (let y = 0; y < h; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.06)";
+    const textColor = isDark ? "rgba(226, 232, 240, 0.70)" : "rgba(15, 23, 42, 0.55)";
+    const titleColor = isDark ? "rgba(226, 232, 240, 0.85)" : "rgba(0, 32, 91, 0.75)";
+    const watermarkColor = isDark ? "rgba(148, 163, 184, 0.40)" : "rgba(15, 23, 42, 0.35)";
 
-    // Marca de agua estadística en código Python tenue en la esquina inferior
-    ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = "rgba(15, 23, 42, 0.22)";
-    ctx.fillText("Modelo: y = β₀ + β₁·ln(x) + ε | R² = 0.942 | SciPy Regress (Python)", 32, h - 22);
+    // Eje y márgenes cartesianos de precisión institucional
+    const marginL = 72;
+    const marginB = 44;
+    const marginT = 32;
+    const marginR = 40;
+    const plotW = w - marginL - marginR;
+    const plotH = h - marginB - marginT;
+
+    // Cuadriculado institucional de compensaciones
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+
+    // Líneas horizontales de salario (Y)
+    const yTicks = [
+      { val: "S/. 25K", ratio: 0.12 },
+      { val: "S/. 18K", ratio: 0.32 },
+      { val: "S/. 12K", ratio: 0.52 },
+      { val: "S/. 6K",  ratio: 0.72 },
+      { val: "S/. 2.5K", ratio: 0.90 }
+    ];
+
+    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = textColor;
+    ctx.textAlign = "right";
+
+    yTicks.forEach(tick => {
+      const y = marginT + plotH * tick.ratio;
+      ctx.beginPath();
+      ctx.moveTo(marginL, y);
+      ctx.lineTo(w - marginR, y);
+      ctx.stroke();
+      ctx.fillText(tick.val, marginL - 8, y + 3);
+    });
+
+    // Líneas verticales de puntos de valuación (X)
+    const xTicks = [
+      { val: "200 pts", ratio: 0.20 },
+      { val: "400 pts", ratio: 0.40 },
+      { val: "600 pts", ratio: 0.60 },
+      { val: "800 pts", ratio: 0.80 },
+      { val: "1000 pts", ratio: 0.98 }
+    ];
+
+    ctx.textAlign = "center";
+    xTicks.forEach(tick => {
+      const x = marginL + plotW * tick.ratio;
+      ctx.beginPath();
+      ctx.moveTo(x, marginT);
+      ctx.lineTo(x, marginT + plotH);
+      ctx.stroke();
+      ctx.fillText(tick.val, x, marginT + plotH + 16);
+    });
+
+    // Título de los Ejes
+    ctx.textAlign = "left";
+    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = titleColor;
+    ctx.fillText("▲ Remuneración Básica (S/.)", marginL, marginT - 10);
+    ctx.textAlign = "right";
+    ctx.fillText("Puntos de Valuación (Factores Objetivos) ►", w - marginR, marginT + plotH + 32);
+
+    // Marca de agua estadística en código Python tenue en la esquina inferior izquierda
+    ctx.textAlign = "left";
+    ctx.font = "10.5px 'Plus Jakarta Sans', monospace";
+    ctx.fillStyle = watermarkColor;
+    ctx.fillText("# SciPy Statsmodels OLS: ln(Salario) = 7.82 + 0.0024*(Puntos) | R² = 0.942 | Ley 30709", marginL, h - 12);
 
     // Cálculo dinámico de las curvas salariales (P25, P50 Mediana, P90)
     const getCurveY = (x, yRatio, waveAmp, timeOffset) => {
-      const normalizedX = x / w;
-      const logGrowth = Math.log1p(normalizedX * 2.2) * 0.28;
-      const base = h * yRatio - (logGrowth * h * 0.85);
-      const wave = Math.sin(x * 0.007 + time * 0.0006 + timeOffset) * waveAmp;
+      const normX = Math.max(0, (x - marginL) / plotW);
+      const logGrowth = Math.log1p(normX * 2.4) * 0.32;
+      const base = marginT + plotH * yRatio - (logGrowth * plotH * 0.78);
+      const wave = Math.sin(normX * 8 + time * 0.0005 + timeOffset) * waveAmp;
       let y = base + wave;
 
-      if (mouse.x !== null) {
+      if (mouse.x !== null && mouse.x >= marginL && mouse.x <= w - marginR) {
         const dist = Math.abs(x - mouse.x);
-        if (dist < 140) {
-          const influence = (1 - dist / 140) * 0.22;
+        if (dist < 120) {
+          const influence = (1 - dist / 120) * 0.18;
           y += (mouse.y - y) * influence;
         }
       }
       return y;
     };
 
-    // Sombreado de la Banda de Confianza Intercuartil (P25 a P75)
+    // Sombreado de la Banda de Equidad Salarial Intercuartil (P25 a P75)
     ctx.beginPath();
-    for (let x = 0; x <= w; x += 12) {
-      const yP25 = getCurveY(x, 0.72, 12, 0);
-      if (x === 0) ctx.moveTo(x, yP25);
+    for (let x = marginL; x <= w - marginR; x += 10) {
+      const yP25 = getCurveY(x, 0.74, 8, 0);
+      if (x === marginL) ctx.moveTo(x, yP25);
       else ctx.lineTo(x, yP25);
     }
-    for (let x = w; x >= 0; x -= 12) {
-      const yP75 = getCurveY(x, 0.44, 14, 1.2);
+    for (let x = w - marginR; x >= marginL; x -= 10) {
+      const yP75 = getCurveY(x, 0.46, 10, 1.2);
       ctx.lineTo(x, yP75);
     }
     ctx.closePath();
-    ctx.fillStyle = "rgba(0, 127, 122, 0.04)";
+    ctx.fillStyle = "rgba(0, 90, 156, 0.05)";
     ctx.fill();
 
-    // Dibujar las 3 curvas percentilares clave
+    // Dibujar las 3 curvas percentilares de compensación
     const curves = [
-      { yRatio: 0.34, color: "rgba(28, 82, 152, 0.38)", width: 1.5, dash: [5, 4], amp: 14, off: 2.1, label: "P90" },
-      { yRatio: 0.52, color: "rgba(0, 127, 122, 0.65)", width: 2.6, dash: [], amp: 16, off: 0.8, label: "P50 (Mediana Mercado)" },
-      { yRatio: 0.72, color: "rgba(200, 77, 54, 0.35)", width: 1.5, dash: [5, 4], amp: 12, off: 0, label: "P25" }
+      { yRatio: 0.36, color: "rgba(0, 32, 91, 0.55)", width: 1.5, dash: [5, 4], amp: 8, off: 2.1, label: "P90 (Máximo Mercado)" },
+      { yRatio: 0.54, color: "rgba(0, 90, 156, 0.95)", width: 2.5, dash: [], amp: 10, off: 0.8, label: "P50 (Mediana / Target)" },
+      { yRatio: 0.74, color: "rgba(0, 135, 102, 0.60)", width: 1.5, dash: [5, 4], amp: 8, off: 0, label: "P25 (Mínimo Mercado)" }
     ];
 
     curves.forEach((c) => {
@@ -523,24 +630,25 @@ function setupProfileInteractiveCanvas() {
       ctx.setLineDash(c.dash);
       ctx.beginPath();
 
-      for (let x = 0; x <= w; x += 8) {
+      for (let x = marginL; x <= w - marginR; x += 8) {
         const y = getCurveY(x, c.yRatio, c.amp, c.off);
-        if (x === 0) ctx.moveTo(x, y);
+        if (x === marginL) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const endY = getCurveY(w - 20, c.yRatio, c.amp, c.off);
+      const endY = getCurveY(w - marginR - 10, c.yRatio, c.amp, c.off);
       ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
       ctx.fillStyle = c.color;
-      ctx.fillText(c.label, w - 120, endY - 6);
+      ctx.textAlign = "right";
+      ctx.fillText(c.label, w - marginR - 8, endY - 6);
     });
 
-    // Dibujar los puntos de dispersión salarial (Scatter Plot)
+    // Puntos de dispersión salarial (Colaboradores / Puestos Reales)
     dots.forEach((dot) => {
-      const cx = w * dot.xPct + Math.sin(time * 0.0004 * dot.speed + dot.phase) * 12;
-      const cy = h * dot.yPct + Math.cos(time * 0.0004 * dot.speed + dot.phase) * 8;
+      const cx = marginL + plotW * dot.xPct + Math.sin(time * 0.0003 * dot.speed + dot.phase) * 6;
+      const cy = marginT + plotH * dot.yPct + Math.cos(time * 0.0003 * dot.speed + dot.phase) * 6;
 
       let sizeMultiplier = 1;
       let isNearMouse = false;
@@ -550,12 +658,12 @@ function setupProfileInteractiveCanvas() {
         const dy = cy - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 95) {
+        if (dist < 80) {
           isNearMouse = true;
-          const proximity = (1 - dist / 95);
-          sizeMultiplier = 1 + proximity * 0.6;
+          const proximity = (1 - dist / 80);
+          sizeMultiplier = 1 + proximity * 0.5;
 
-          ctx.strokeStyle = `rgba(0, 127, 122, ${proximity * 0.22})`;
+          ctx.strokeStyle = `rgba(0, 90, 156, ${proximity * 0.25})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(cx, cy);
@@ -565,7 +673,7 @@ function setupProfileInteractiveCanvas() {
       }
 
       ctx.fillStyle = dot.color;
-      ctx.globalAlpha = isNearMouse ? 0.85 : 0.42;
+      ctx.globalAlpha = isNearMouse ? 0.95 : 0.45;
 
       ctx.beginPath();
       ctx.arc(cx, cy, dot.r * sizeMultiplier, 0, Math.PI * 2);
@@ -1084,42 +1192,6 @@ function setupStatCounters() {
 }
 
 // ==========================================================================
-// EFECTO 3D TILT EN TARJETAS PREMIUM (MICRO-INTERACCIONES FÍSICAS)
-// ==========================================================================
-function setup3DCardTilt() {
-  if (prefersReduced || window.innerWidth < 768) return;
-
-  const tiltCards = document.querySelectorAll(
-    ".service-card, .case-card, .sector-card, .profile-card, .incompany-card"
-  );
-
-  tiltCards.forEach((card) => {
-    let rafId = null;
-
-    card.addEventListener("mousemove", (e) => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * -5;
-        const rotateY = ((x - centerX) / centerX) * 5;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
-      });
-    });
-
-    card.addEventListener("mouseleave", () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
-    });
-  });
-}
-
-// ==========================================================================
 // MODO OSCURO / CLARO (DARK MODE TOGGLE CON LOCALSTORAGE Y PREFERENCIA SO)
 // ==========================================================================
 function setupThemeToggle() {
@@ -1230,7 +1302,6 @@ function initializeApp() {
   setupRiskEvaluator();
   setupHeroBackgroundVideo();
   setupStatCounters();
-  setup3DCardTilt();
   setupThemeToggle();
   setupMobileMenu();
   setupBackToTop();
