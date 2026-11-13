@@ -507,7 +507,7 @@ function setupProfileInteractiveCanvas() {
 
   // Generar puntos de dispersión salarial realistas (Scatter Plot de Planilla y Benchmark)
   const dots = [];
-  const dotColors = ["#00205B", "#005A9C", "#008766", "#334155", "#854D0E"];
+  const dotColors = ["#38BDF8", "#00A3E0", "#34D399", "#60A5FA", "#A7F3D0"];
   for (let i = 0; i < 42; i++) {
     const xPct = 0.08 + (i / 42) * 0.84;
     // Dispersión con distribución gaussiana alrededor de la mediana
@@ -535,71 +535,38 @@ function setupProfileInteractiveCanvas() {
     const watermarkColor = isDark ? "rgba(148, 163, 184, 0.40)" : "rgba(15, 23, 42, 0.35)";
 
     // Eje y márgenes cartesianos de precisión institucional
-    const marginL = 72;
-    const marginB = 44;
-    const marginT = 32;
+    const marginL = 50;
+    const marginB = 30;
+    const marginT = 25;
     const marginR = 40;
     const plotW = w - marginL - marginR;
     const plotH = h - marginB - marginT;
 
-    // Cuadriculado institucional de compensaciones
-    ctx.strokeStyle = gridColor;
+    // Cuadriculado tenue de fondo (sin textos intrusivos para evitar cruces con el contenido)
+    ctx.strokeStyle = "rgba(56, 189, 248, 0.06)";
     ctx.lineWidth = 1;
+    ctx.setLineDash([4, 8]);
 
-    // Líneas horizontales de salario (Y)
-    const yTicks = [
-      { val: "S/. 25K", ratio: 0.12 },
-      { val: "S/. 18K", ratio: 0.32 },
-      { val: "S/. 12K", ratio: 0.52 },
-      { val: "S/. 6K",  ratio: 0.72 },
-      { val: "S/. 2.5K", ratio: 0.90 }
-    ];
-
-    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = textColor;
-    ctx.textAlign = "right";
-
-    yTicks.forEach(tick => {
-      const y = marginT + plotH * tick.ratio;
+    // Líneas horizontales sutiles
+    const yRatios = [0.15, 0.35, 0.55, 0.75, 0.90];
+    yRatios.forEach(r => {
+      const y = marginT + plotH * r;
       ctx.beginPath();
       ctx.moveTo(marginL, y);
       ctx.lineTo(w - marginR, y);
       ctx.stroke();
-      ctx.fillText(tick.val, marginL - 8, y + 3);
     });
 
-    // Líneas verticales de puntos de valuación (X)
-    const xTicks = [
-      { val: "200 pts", ratio: 0.20 },
-      { val: "400 pts", ratio: 0.40 },
-      { val: "600 pts", ratio: 0.60 },
-      { val: "800 pts", ratio: 0.80 },
-      { val: "1000 pts", ratio: 0.98 }
-    ];
-
-    ctx.textAlign = "center";
-    xTicks.forEach(tick => {
-      const x = marginL + plotW * tick.ratio;
+    // Líneas verticales sutiles
+    const xRatios = [0.20, 0.40, 0.60, 0.80, 0.95];
+    xRatios.forEach(r => {
+      const x = marginL + plotW * r;
       ctx.beginPath();
       ctx.moveTo(x, marginT);
       ctx.lineTo(x, marginT + plotH);
       ctx.stroke();
-      ctx.fillText(tick.val, x, marginT + plotH + 16);
     });
-
-    // Título de los Ejes
-    ctx.textAlign = "left";
-    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = titleColor;
-    ctx.fillText("▲ Remuneración Básica (S/.)", marginL, marginT - 10);
-    ctx.textAlign = "right";
-    ctx.fillText("Puntos de Valuación (Factores Objetivos) ►", w - marginR, marginT + plotH + 32);
-
-    // Marca de agua estadística en código Python tenue en la esquina inferior izquierda
-    ctx.textAlign = "left";
-    ctx.font = "10.5px 'Plus Jakarta Sans', monospace";
-    ctx.fillStyle = watermarkColor;
-    ctx.fillText("# SciPy Statsmodels OLS: ln(Salario) = 7.82 + 0.0024*(Puntos) | R² = 0.942 | Ley 30709", marginL, h - 12);
+    ctx.setLineDash([]);
 
     // Cálculo dinámico de las curvas salariales (P25, P50 Mediana, P90)
     const getCurveY = (x, yRatio, waveAmp, timeOffset) => {
@@ -619,7 +586,7 @@ function setupProfileInteractiveCanvas() {
       return y;
     };
 
-    // Sombreado de la Banda de Equidad Salarial Intercuartil (P25 a P75)
+    // Sombreado de la Banda de Equidad Salarial Intercuartil
     ctx.beginPath();
     for (let x = marginL; x <= w - marginR; x += 10) {
       const yP25 = getCurveY(x, 0.74, 8, 0);
@@ -631,20 +598,19 @@ function setupProfileInteractiveCanvas() {
       ctx.lineTo(x, yP75);
     }
     ctx.closePath();
-    ctx.fillStyle = "rgba(0, 90, 156, 0.05)";
+    ctx.fillStyle = "rgba(56, 189, 248, 0.04)";
     ctx.fill();
 
-    // Dibujar las 3 curvas percentilares de compensación
+    // Dibujar curvas percentilares de compensación dinámicas y luminosas
     const curves = [
-      { yRatio: 0.36, color: "rgba(0, 32, 91, 0.55)", width: 1.5, dash: [5, 4], amp: 8, off: 2.1, label: "P90 (Máximo Mercado)" },
-      { yRatio: 0.54, color: "rgba(0, 90, 156, 0.95)", width: 2.5, dash: [], amp: 10, off: 0.8, label: "P50 (Mediana / Target)" },
-      { yRatio: 0.74, color: "rgba(0, 135, 102, 0.60)", width: 1.5, dash: [5, 4], amp: 8, off: 0, label: "P25 (Mínimo Mercado)" }
+      { yRatio: 0.36, color: "rgba(56, 189, 248, 0.28)", width: 1.5, amp: 8, off: 2.1 },
+      { yRatio: 0.54, color: "rgba(0, 163, 224, 0.42)", width: 2.2, amp: 10, off: 0.8 },
+      { yRatio: 0.74, color: "rgba(52, 211, 153, 0.30)", width: 1.5, amp: 8, off: 0 }
     ];
 
     curves.forEach((c) => {
       ctx.strokeStyle = c.color;
       ctx.lineWidth = c.width;
-      ctx.setLineDash(c.dash);
       ctx.beginPath();
 
       for (let x = marginL; x <= w - marginR; x += 8) {
@@ -653,13 +619,6 @@ function setupProfileInteractiveCanvas() {
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
-      ctx.setLineDash([]);
-
-      const endY = getCurveY(w - marginR - 10, c.yRatio, c.amp, c.off);
-      ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = c.color;
-      ctx.textAlign = "right";
-      ctx.fillText(c.label, w - marginR - 8, endY - 6);
     });
 
     // Puntos de dispersión salarial (Colaboradores / Puestos Reales)
