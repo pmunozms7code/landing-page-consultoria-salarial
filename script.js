@@ -5,157 +5,138 @@ const CONTACT_LINKEDIN = "https://www.linkedin.com/in/percy-saul-muñoz-sierra-a
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// CANVAS DE LA LANDING PAGE (HERO Y PANEL METODO)
-function setupCanvas(canvas) {
+// ==========================================================================
+// HIGH PERFORMANCE CANVAS ENGINE (CACHED DIMENSIONS & OBSERVERS - 60 FPS)
+// ==========================================================================
+
+let isModelCanvasVisible = false;
+let modelCanvasState = null;
+
+function setupModelCanvas() {
+  const canvas = document.getElementById("modelCanvas");
+  if (!canvas) return;
+
   const ctx = canvas.getContext("2d");
+  let w = 0;
+  let h = 0;
+
   const resize = () => {
     const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    w = rect.width;
+    h = rect.height;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return rect;
   };
-  return { ctx, resize };
-}
 
-function drawSalaryHero(time) {
-  const canvas = document.getElementById("salaryCanvas");
-  if (!canvas) return;
-  const { ctx, resize } = setupCanvas(canvas);
-  const rect = resize();
-  const w = rect.width;
-  const h = rect.height;
-  ctx.clearRect(0, 0, w, h);
-
-  ctx.globalAlpha = 0.42;
-  ctx.strokeStyle = "#c7d5dc";
-  ctx.lineWidth = 1;
-  for (let x = 0; x < w; x += 54) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, h);
-    ctx.stroke();
+  // Redimensionar solo cuando el contenedor cambie de tamaño
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(canvas);
+  } else {
+    window.addEventListener("resize", resize, { passive: true });
   }
-  for (let y = 0; y < h; y += 54) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-    ctx.stroke();
+  resize();
+
+  // Pausar renderizado cuando el método esté fuera de pantalla
+  const metodoSection = document.getElementById("metodo");
+  if (metodoSection && window.IntersectionObserver) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isModelCanvasVisible = entry.isIntersecting;
+        if (isModelCanvasVisible) {
+          requestAnimationFrame(drawLoop);
+        }
+      });
+    }, { threshold: 0.05 });
+    io.observe(metodoSection);
+  } else {
+    isModelCanvasVisible = true;
   }
 
-  const bands = [
-    { y: 0.34, color: "#225ea8", label: "P50" },
-    { y: 0.48, color: "#007f7a", label: "P75" },
-    { y: 0.62, color: "#d65f46", label: "P90" }
-  ];
+  function drawModelPanel(time) {
+    if (!canvas.offsetParent || w === 0 || h === 0) return;
 
-  bands.forEach((band, i) => {
-    ctx.globalAlpha = 0.88;
-    ctx.strokeStyle = band.color;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    for (let x = w * 0.38; x < w + 20; x += 18) {
-      const wave = Math.sin(x * 0.011 + time * 0.001 + i) * 12;
-      const growth = (x - w * 0.38) * 0.105;
-      const y = h * band.y - growth + wave;
-      if (x === w * 0.38) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-  });
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#111a22";
+    ctx.fillRect(0, 0, w, h);
 
-  for (let i = 0; i < 92; i += 1) {
-    const x = w * (0.42 + ((i * 37) % 58) / 100);
-    const base = h * (0.64 - ((i * 17) % 40) / 100);
-    const y = base + Math.sin(time * 0.0012 + i) * 11;
-    const colors = ["#225ea8", "#007f7a", "#d65f46", "#33824b", "#b38b00"];
-    ctx.globalAlpha = 0.62;
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.beginPath();
-    ctx.arc(x, y, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
+    const left = 44;
+    const bottom = h - 118;
+    const top = 42;
+    const right = w - 34;
 
-function drawModelPanel(time) {
-  const canvas = document.getElementById("modelCanvas");
-  if (!canvas || !canvas.offsetParent) return; // No dibujar si está oculto (pestaña inactiva)
-  const { ctx, resize } = setupCanvas(canvas);
-  const rect = resize();
-  const w = rect.width;
-  const h = rect.height;
-  ctx.clearRect(0, 0, w, h);
-
-  ctx.fillStyle = "#111a22";
-  ctx.fillRect(0, 0, w, h);
-
-  const left = 44;
-  const bottom = h - 118;
-  const top = 42;
-  const right = w - 34;
-
-  ctx.globalAlpha = 0.25;
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 1;
-  for (let y = top; y <= bottom; y += 46) {
-    ctx.beginPath();
-    ctx.moveTo(left, y);
-    ctx.lineTo(right, y);
-    ctx.stroke();
-  }
-
-  const families = [
-    { x: 0.18, c: "#59c4bd" },
-    { x: 0.38, c: "#6ea8fe" },
-    { x: 0.58, c: "#ff947d" },
-    { x: 0.78, c: "#f1c84b" }
-  ];
-
-  families.forEach((fam, idx) => {
-    const cx = left + (right - left) * fam.x;
-    const bandTop = top + 46 + idx * 18;
-    const bandHeight = 118 + idx * 16;
-    ctx.globalAlpha = 0.18;
-    ctx.fillStyle = fam.c;
-    ctx.fillRect(cx - 42, bandTop, 84, bandHeight);
-    ctx.globalAlpha = 0.84;
-    ctx.strokeStyle = fam.c;
-    ctx.lineWidth = 2;
-    ctx.strokeRect(cx - 42, bandTop, 84, bandHeight);
-
-    for (let j = 0; j < 16; j += 1) {
-      const jitter = Math.sin(time * 0.001 + j * 1.7 + idx) * 14;
-      const y = bandTop + 12 + ((j * 31) % Math.max(36, bandHeight - 24));
-      ctx.globalAlpha = 0.82;
-      ctx.fillStyle = fam.c;
+    ctx.globalAlpha = 0.25;
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1;
+    for (let y = top; y <= bottom; y += 46) {
       ctx.beginPath();
-      ctx.arc(cx + jitter, y, 4, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.moveTo(left, y);
+      ctx.lineTo(right, y);
+      ctx.stroke();
     }
-  });
 
-  ctx.globalAlpha = 0.95;
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(left, bottom);
-  ctx.lineTo(right, bottom);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(left, top);
-  ctx.lineTo(left, bottom);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(left, top);
-  ctx.lineTo(right, top);
-  ctx.stroke();
-}
+    const families = [
+      { x: 0.18, c: "#59c4bd" },
+      { x: 0.38, c: "#6ea8fe" },
+      { x: 0.58, c: "#ff947d" },
+      { x: 0.78, c: "#f1c84b" }
+    ];
 
-function animate(time) {
-  drawSalaryHero(time);
-  drawModelPanel(time);
-  if (!prefersReduced) requestAnimationFrame(animate);
+    families.forEach((fam, idx) => {
+      const cx = left + (right - left) * fam.x;
+      const bandTop = top + 46 + idx * 18;
+      const bandHeight = 118 + idx * 16;
+      ctx.globalAlpha = 0.18;
+      ctx.fillStyle = fam.c;
+      ctx.fillRect(cx - 42, bandTop, 84, bandHeight);
+      ctx.globalAlpha = 0.84;
+      ctx.strokeStyle = fam.c;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cx - 42, bandTop, 84, bandHeight);
+
+      for (let j = 0; j < 16; j += 1) {
+        const jitter = Math.sin(time * 0.001 + j * 1.7 + idx) * 14;
+        const y = bandTop + 12 + ((j * 31) % Math.max(36, bandHeight - 24));
+        ctx.globalAlpha = 0.82;
+        ctx.fillStyle = fam.c;
+        ctx.beginPath();
+        ctx.arc(cx + jitter, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    ctx.globalAlpha = 0.95;
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(left, bottom);
+    ctx.lineTo(right, bottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(left, top);
+    ctx.lineTo(left, bottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(left, top);
+    ctx.lineTo(right, top);
+    ctx.stroke();
+  }
+
+  function drawLoop(time) {
+    if (!isModelCanvasVisible) return;
+    drawModelPanel(time);
+    if (!prefersReduced) {
+      requestAnimationFrame(drawLoop);
+    }
+  }
+
+  modelCanvasState = { resize, drawLoop };
+  if (!prefersReduced) {
+    requestAnimationFrame(drawLoop);
+  }
 }
 
 // GESTIÓN DEL CARRUSEL DE PERFIL Y CASOS DE ÉXITO
@@ -218,7 +199,10 @@ function setupTabs() {
     tabSim.classList.remove("active");
 
     // Forzar redibujo de canvas cuando vuelve a estar visible
-    animate(performance.now());
+    if (modelCanvasState) {
+      modelCanvasState.resize();
+      requestAnimationFrame(modelCanvasState.drawLoop);
+    }
   });
 
   btnShowSim.addEventListener("click", () => {
@@ -398,20 +382,55 @@ function setupProfileInteractiveCanvas() {
   const shell = document.querySelector(".profile-shell");
   if (!canvas || !shell) return;
 
-  const { ctx, resize } = setupCanvas(canvas);
-  let rect = resize();
+  const ctx = canvas.getContext("2d");
+  let w = 0;
+  let h = 0;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = rect.width;
+    h = rect.height;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(shell);
+  } else {
+    window.addEventListener("resize", resize, { passive: true });
+  }
+  resize();
+
+  let isProfileVisible = false;
+  if (window.IntersectionObserver) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isProfileVisible = entry.isIntersecting;
+        if (isProfileVisible && !prefersReduced) {
+          requestAnimationFrame(draw);
+        }
+      });
+    }, { threshold: 0.05 });
+    io.observe(shell);
+  } else {
+    isProfileVisible = true;
+  }
 
   let mouse = { x: null, y: null };
   shell.addEventListener("mousemove", (e) => {
     const r = canvas.getBoundingClientRect();
     mouse.x = Math.max(0, e.clientX - r.left);
     mouse.y = Math.max(0, e.clientY - r.top);
-  });
+  }, { passive: true });
 
   shell.addEventListener("mouseleave", () => {
     mouse.x = null;
     mouse.y = null;
-  });
+  }, { passive: true });
 
   // Generar puntos de dispersión salarial realistas (Scatter Plot de Planilla y Benchmark)
   const dots = [];
@@ -432,14 +451,8 @@ function setupProfileInteractiveCanvas() {
   }
 
   function draw(time) {
-    if (!canvas.offsetParent) {
-      requestAnimationFrame(draw);
-      return;
-    }
+    if (!isProfileVisible || !canvas.offsetParent || w === 0 || h === 0) return;
 
-    rect = resize();
-    const w = rect.width;
-    const h = rect.height;
     ctx.clearRect(0, 0, w, h);
 
     // Cuadriculado cartesiano tenue de alta resolución (estilo Matplotlib / Seaborn)
@@ -466,14 +479,12 @@ function setupProfileInteractiveCanvas() {
 
     // Cálculo dinámico de las curvas salariales (P25, P50 Mediana, P90)
     const getCurveY = (x, yRatio, waveAmp, timeOffset) => {
-      // Regresión logarítmica creciente de compensación
       const normalizedX = x / w;
       const logGrowth = Math.log1p(normalizedX * 2.2) * 0.28;
       const base = h * yRatio - (logGrowth * h * 0.85);
       const wave = Math.sin(x * 0.007 + time * 0.0006 + timeOffset) * waveAmp;
       let y = base + wave;
 
-      // Interacción física con el mouse
       if (mouse.x !== null) {
         const dist = Math.abs(x - mouse.x);
         if (dist < 140) {
@@ -518,9 +529,8 @@ function setupProfileInteractiveCanvas() {
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
-      ctx.setLineDash([]); // Reset dash
+      ctx.setLineDash([]);
 
-      // Etiqueta tenue en el extremo derecho
       const endY = getCurveY(w - 20, c.yRatio, c.amp, c.off);
       ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
       ctx.fillStyle = c.color;
@@ -545,7 +555,6 @@ function setupProfileInteractiveCanvas() {
           const proximity = (1 - dist / 95);
           sizeMultiplier = 1 + proximity * 0.6;
 
-          // Línea de conexión dinámica
           ctx.strokeStyle = `rgba(0, 127, 122, ${proximity * 0.22})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -565,10 +574,14 @@ function setupProfileInteractiveCanvas() {
       ctx.globalAlpha = 1.0;
     });
 
-    requestAnimationFrame(draw);
+    if (isProfileVisible && !prefersReduced) {
+      requestAnimationFrame(draw);
+    }
   }
 
-  requestAnimationFrame(draw);
+  if (!prefersReduced) {
+    requestAnimationFrame(draw);
+  }
 }
 
 function animateValue(obj, start, end, duration, suffix = "") {
@@ -795,10 +808,10 @@ function setupAccordion() {
 
 // Event Listeners y Carga de Módulos
 window.addEventListener("resize", () => {
-  if (drawSalaryHero && drawModelPanel) {
-    animate(performance.now());
+  if (modelCanvasState) {
+    modelCanvasState.resize();
   }
-});
+}, { passive: true });
 
 // EVALUADOR DE RIESGO DE CUMPLIMIENTO LEY 30709 (QUIZ FUNNEL CRO)
 function setupRiskEvaluator() {
@@ -1019,6 +1032,191 @@ function setupHeroBackgroundVideo() {
   });
 }
 
+// ==========================================================================
+// ESTADÍSTICAS ANIMADAS (APPLE STYLE SMOOTH COUNT-UP INTERACTION)
+// ==========================================================================
+function setupStatCounters() {
+  const counterEls = document.querySelectorAll(".counter-val");
+  if (!counterEls.length) return;
+
+  const animateCount = (el) => {
+    if (el.dataset.animated === "true") return;
+    el.dataset.animated = "true";
+
+    const target = parseFloat(el.getAttribute("data-target")) || 0;
+    const prefix = el.getAttribute("data-prefix") || "";
+    const suffix = el.getAttribute("data-suffix") || "";
+    const duration = 1600;
+    const startTime = performance.now();
+
+    const update = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Curva easeOutExpo para frenado ultra elegante y profesional
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const current = Math.round(ease * target);
+
+      el.textContent = `${prefix}${current}${suffix}`;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = `${prefix}${target}${suffix}`;
+      }
+    };
+    requestAnimationFrame(update);
+  };
+
+  if (window.IntersectionObserver) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    counterEls.forEach((el) => observer.observe(el));
+  } else {
+    counterEls.forEach((el) => animateCount(el));
+  }
+}
+
+// ==========================================================================
+// EFECTO 3D TILT EN TARJETAS PREMIUM (MICRO-INTERACCIONES FÍSICAS)
+// ==========================================================================
+function setup3DCardTilt() {
+  if (prefersReduced || window.innerWidth < 768) return;
+
+  const tiltCards = document.querySelectorAll(
+    ".service-card, .case-card, .sector-card, .profile-card, .incompany-card"
+  );
+
+  tiltCards.forEach((card) => {
+    let rafId = null;
+
+    card.addEventListener("mousemove", (e) => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+      });
+    });
+
+    card.addEventListener("mouseleave", () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+    });
+  });
+}
+
+// ==========================================================================
+// MODO OSCURO / CLARO (DARK MODE TOGGLE CON LOCALSTORAGE Y PREFERENCIA SO)
+// ==========================================================================
+function setupThemeToggle() {
+  const toggleBtn = document.getElementById("themeToggleBtn");
+  if (!toggleBtn) return;
+
+  const sunIcon = toggleBtn.querySelector(".theme-icon-sun");
+  const moonIcon = toggleBtn.querySelector(".theme-icon-moon");
+
+  const savedTheme = localStorage.getItem("theme");
+  const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+
+  const applyTheme = (theme) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+
+    if (theme === "dark") {
+      if (sunIcon) sunIcon.style.display = "block";
+      if (moonIcon) moonIcon.style.display = "none";
+      toggleBtn.setAttribute("aria-label", "Cambiar a modo claro");
+      toggleBtn.title = "Cambiar a modo claro";
+    } else {
+      if (sunIcon) sunIcon.style.display = "none";
+      if (moonIcon) moonIcon.style.display = "block";
+      toggleBtn.setAttribute("aria-label", "Cambiar a modo oscuro");
+      toggleBtn.title = "Cambiar a modo oscuro";
+    }
+  };
+
+  applyTheme(initialTheme);
+
+  toggleBtn.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(newTheme);
+  });
+}
+
+// ==========================================================================
+// MENÚ MÓVIL DOCK FLOTANTE (HAMBURGUESA & CAJÓN MODERNO)
+// ==========================================================================
+function setupMobileMenu() {
+  const menuBtn = document.getElementById("mobileMenuBtn");
+  const drawer = document.getElementById("mobileNavDrawer");
+  if (!menuBtn || !drawer) return;
+
+  const toggleMenu = () => {
+    const isOpen = drawer.classList.contains("is-open");
+    if (isOpen) {
+      drawer.classList.remove("is-open");
+      menuBtn.classList.remove("is-active");
+      menuBtn.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-hidden", "true");
+    } else {
+      drawer.classList.add("is-open");
+      menuBtn.classList.add("is-active");
+      menuBtn.setAttribute("aria-expanded", "true");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+  };
+
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  drawer.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      drawer.classList.remove("is-open");
+      menuBtn.classList.remove("is-active");
+      menuBtn.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-hidden", "true");
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (drawer.classList.contains("is-open") && !drawer.contains(e.target) && !menuBtn.contains(e.target)) {
+      drawer.classList.remove("is-open");
+      menuBtn.classList.remove("is-active");
+      menuBtn.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-hidden", "true");
+    }
+  });
+}
+
+// ==========================================================================
+// BOTÓN VOLVER ARRIBA (BACK TO TOP)
+// ==========================================================================
+function setupBackToTop() {
+  const btn = document.getElementById("backToTopBtn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
 function initializeApp() {
   syncContactLinks();
   setupCarousel();
@@ -1027,10 +1225,15 @@ function initializeApp() {
   setupLeadForm();
   setupScrollAnimations();
   setupProfileInteractiveCanvas();
+  setupModelCanvas();
   setupAccordion();
   setupRiskEvaluator();
   setupHeroBackgroundVideo();
-  animate(performance.now());
+  setupStatCounters();
+  setup3DCardTilt();
+  setupThemeToggle();
+  setupMobileMenu();
+  setupBackToTop();
 }
 
 if (document.readyState === "loading") {
