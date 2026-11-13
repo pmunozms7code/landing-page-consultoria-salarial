@@ -575,12 +575,15 @@ function animateValue(obj, start, end, duration, suffix = "") {
   window.requestAnimationFrame(step);
 }
 
-// FORMULARIO DE CAPTACIÓN DE LEADS CON CONEXIÓN NETLIFY + DESCARGA + EMAIL
+// FORMULARIO DE CAPTACIÓN DE LEADS CON CONEXIÓN NETLIFY + TARJETA DE ÉXITO CRO
 function setupLeadForm() {
   const form = document.getElementById("leadForm");
+  const successCard = document.getElementById("formSuccessCard");
+  const successWaBtn = document.getElementById("successWaBtn");
+  const btnReset = document.getElementById("btnResetForm");
+  const submitBtn = document.getElementById("btnSubmitLead");
   const status = document.getElementById("formStatus");
-  const downloadLead = document.getElementById("downloadLead");
-  if (!form || !status) return;
+  if (!form) return;
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -594,80 +597,66 @@ function setupLeadForm() {
       return;
     }
 
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando solicitud...";
+    }
+    if (status) {
+      status.textContent = "Procesando...";
+      status.className = "form-status";
+    }
+
     const data = new FormData(form);
-    const entries = [
-      ["Nombre", data.get("nombre")],
-      ["Correo", data.get("correo")],
-      ["Telefono", data.get("telefono")],
-      ["Cargo", data.get("cargo")],
-      ["Empresa", data.get("empresa")],
-      ["Pais", data.get("pais")],
-      ["Sitio web", data.get("sitio_web")],
-      ["Colaboradores", data.get("colaboradores")],
-      ["Servicio de interes", data.get("servicio")],
-      ["Estado de informacion salarial", data.get("estado_datos")],
-      ["Plazo estimado", data.get("plazo")],
-      ["Presupuesto aproximado", data.get("presupuesto")],
-      ["Canal preferido de contacto", data.get("canal_contacto")],
-      ["Principal necesidad", data.get("necesidad")]
-    ];
-
-    const submittedAt = new Date().toLocaleString("es-PE", {
-      dateStyle: "medium",
-      timeStyle: "short"
-    });
-
-    const body = [
-      `Fecha de consulta: ${submittedAt}`,
-      "",
-      ...entries
-        .map(([label, value]) => `${label}: ${value || "No especificado"}`)
-    ].join("\n");
-
-    status.textContent = "Procesando envío...";
-    status.className = "form-status";
-
+    const empresa = (data.get("empresa") || "mi empresa").toString().trim();
+    const servicio = (data.get("servicio") || "consultoría").toString().trim();
     const formData = new URLSearchParams(data).toString();
 
-    // Enviar datos por fetch a Netlify
+    const showSuccess = () => {
+      form.hidden = true;
+      if (successCard) {
+        successCard.hidden = false;
+      }
+      if (successWaBtn) {
+        const textMsg = encodeURIComponent(
+          `Hola Percy, acabo de enviar el formulario para ${empresa} solicitando información sobre ${servicio}.`
+        );
+        successWaBtn.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${textMsg}`;
+      }
+      successCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+
+    // Enviar datos por fetch a Netlify Forms
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData
     })
       .then(() => {
-        // Envío exitoso
-        status.textContent = "¡Solicitud registrada! Preparando tu aplicación de correo y tu archivo de resumen...";
-        status.classList.add("success");
-
-        triggerOutputs(body, data);
+        showSuccess();
       })
       .catch((error) => {
-        console.warn("Netlify Forms falló. Iniciando envío directo cliente-servidor:", error);
-        status.textContent = "Enlace listo. Se abrirá tu aplicación de correo y podrás descargar el resumen.";
-        status.classList.add("success");
-
-        triggerOutputs(body, data);
+        console.warn("Netlify Forms endpoint no disponible o testing local:", error);
+        // Mostrar confirmación y WhatsApp de respaldo inmediato para no perder el lead
+        showSuccess();
       });
   });
 
-  function triggerOutputs(bodyText, formDataObj) {
-    // Generar archivo txt para descarga
-    const file = new Blob([bodyText], { type: "text/plain;charset=utf-8" });
-    const fileUrl = URL.createObjectURL(file);
-    if (downloadLead) {
-      downloadLead.href = fileUrl;
-      downloadLead.hidden = false;
-    }
-
-    // Configurar enlace mailto
-    const subject = `Consulta salarial - ${formDataObj.get("empresa") || "Solicitud de Cliente"}`;
-    const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
-
-    // Redirigir al mailto transcurrido un segundo para no interrumpir
-    setTimeout(() => {
-      window.location.href = mailto;
-    }, 1000);
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      form.reset();
+      form.hidden = false;
+      if (successCard) {
+        successCard.hidden = true;
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Solicitar diagnóstico confidencial";
+      }
+      if (status) {
+        status.textContent = "";
+      }
+      form.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 }
 
@@ -700,17 +689,25 @@ function syncContactLinks() {
     link.href = CONTACT_LINKEDIN;
   });
 
-  const whatsappLinks = document.querySelectorAll('a[href*="wa.me/51931697778"]');
+  const whatsappLinks = document.querySelectorAll('a[href*="wa.me/"]');
   whatsappLinks.forEach(link => {
-    const textMsg = encodeURIComponent("Hola Percy, me contacto desde tu landing page para solicitar un diagnóstico de mi estructura salarial.");
-    link.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${textMsg}`;
+    // Si el link ya tiene un mensaje específico en su query param, no lo sobreescribimos
+    if (!link.href.includes("text=")) {
+      const textMsg = encodeURIComponent("Hola Percy, me contacto desde tu landing page para solicitar un diagnóstico para mi empresa.");
+      link.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${textMsg}`;
+    } else {
+      // Asegurar que el número apunte al configurado en CONTACT_WHATSAPP
+      link.href = link.href.replace(/wa\.me\/\d+/, `wa.me/${CONTACT_WHATSAPP}`);
+    }
   });
 }
 
 // INICIADOR DE ANIMACIONES SUB-VISUALES AL HACER SCROLL (INTERACTION OBSERVER)
 function setupScrollAnimations() {
   if (prefersReduced) return;
-  const cards = document.querySelectorAll(".service-card, .case-card, .step, .contact-item, .accordion-item");
+  const cards = document.querySelectorAll(
+    ".service-card, .case-card, .step, .contact-item, .accordion-item, .sector-card, .testimonial-card, .nda-guarantee-card, .corp-badge"
+  );
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -771,14 +768,18 @@ window.addEventListener("resize", () => {
   }
 });
 
-// EVALUADOR DE RIESGO DE CUMPLIMIENTO LEY 30709
+// EVALUADOR DE RIESGO DE CUMPLIMIENTO LEY 30709 (QUIZ FUNNEL CRO)
 function setupRiskEvaluator() {
   const btn = document.getElementById("btnCheckRisk");
   const resultDiv = document.getElementById("riskResult");
   const badge = document.getElementById("riskBadge");
+  const scorePill = document.getElementById("riskScorePill");
   const textField = document.getElementById("riskText");
+  const fineBox = document.getElementById("riskFineBox");
+  const waBtn = document.getElementById("riskWaBtn");
+  const formBtn = document.getElementById("riskFormBtn");
 
-  if (!btn) return;
+  if (!btn || !resultDiv) return;
 
   btn.addEventListener("click", () => {
     const q1 = document.querySelector('input[name="q1"]:checked');
@@ -786,24 +787,85 @@ function setupRiskEvaluator() {
     const q3 = document.querySelector('input[name="q3"]:checked');
 
     if (!q1 || !q2 || !q3) {
-      alert("Por favor, responde las 3 preguntas antes de calcular tu nivel de riesgo.");
+      alert("Por favor, responde las 3 preguntas clave para emitir tu diagnóstico.");
       return;
     }
 
-    resultDiv.hidden = false;
-    const hasHighRisk = q1.value === "no" || q2.value === "no" || q3.value === "no";
+    // Feedback dinámico de procesamiento para generar autoridad diagnóstica
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = "Analizando respuestas según escala SUNAFIL...";
 
-    if (hasHighRisk) {
-      resultDiv.className = "risk-result high";
-      badge.textContent = "ALTO RIESGO / INCUMPLIMIENTO NOMINAL";
-      textField.innerHTML = "Tu organización está expuesta a <strong>sanciones severas y multas acumulativas por parte de SUNAFIL</strong>. Carecer de un Cuadro de Categorías y Funciones valorado, de una política salarial escrita comunicada o de justificaciones estadísticas objetivas infringe de forma grave la Ley 30709.";
-    } else {
-      resultDiv.className = "risk-result low";
-      badge.textContent = "RIESGO BAJO / CUMPLIMIENTO BASE";
-      textField.innerHTML = "¡Excelente! Tu estructura reporta un cumplimiento óptimo de los requisitos base de la Ley 30709. Te recomendamos desarrollar auditorías analíticas anuales en Excel o Python para asegurar que las nuevas contrataciones no introduzcan distorsiones salariales imprevistas.";
-    }
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      resultDiv.hidden = false;
 
-    resultDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      let failures = 0;
+      if (q1.value === "no") failures++;
+      if (q2.value === "no") failures++;
+      if (q3.value === "no") failures++;
+
+      if (failures > 0) {
+        resultDiv.className = "risk-result high";
+        badge.textContent = "ALTO RIESGO / CONTINGENCIA SUNAFIL DETECTADA";
+        if (scorePill) {
+          scorePill.textContent = `${failures} de 3 requisitos obligatorios incumplidos`;
+          scorePill.className = "risk-score-pill danger";
+        }
+        textField.innerHTML =
+          "Tu organización presenta <strong>omisiones estructurales graves frente a la Ley 30709</strong>. La ausencia de un Cuadro de Categorías valorado (CCF), de una política salarial comunicada con constancia de entrega o de justificaciones estadísticas para brechas de remuneración no admite subsanación posterior una vez notificada la fiscalización.";
+        
+        if (fineBox) fineBox.style.display = "flex";
+
+        if (waBtn) {
+          const waMsg = encodeURIComponent(
+            `Hola Percy, completé el evaluador de la Ley 30709 en tu web y mi empresa obtuvo ALTO RIESGO (${failures}/3 requisitos). Quisiera agendar una sesión preventiva urgente.`
+          );
+          waBtn.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${waMsg}`;
+          waBtn.innerHTML = `
+            <span style="display:inline-flex; align-items:center; gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+              Agendar Sesión de Rescate Preventivo (15 min)
+            </span>`;
+        }
+      } else {
+        resultDiv.className = "risk-result low";
+        badge.textContent = "RIESGO BAJO / CUMPLIMIENTO BASE ACREDITADO";
+        if (scorePill) {
+          scorePill.textContent = "3 de 3 requisitos clave cumplidos";
+          scorePill.className = "risk-score-pill success";
+        }
+        textField.innerHTML =
+          "¡Felicitaciones! Tu estructura salarial cuenta con los pilares base exigidos por ley. Recuerda que la principal fuente de multas en empresas conformes ocurre con el ingreso de <strong>nuevas contrataciones o incrementos no homologados</strong> que distorsionan las bandas. Recomendamos una auditoría anual de mantenimiento.";
+        
+        if (fineBox) fineBox.style.display = "none";
+
+        if (waBtn) {
+          const waMsg = encodeURIComponent(
+            "Hola Percy, obtuve RIESGO BAJO en el evaluador de la Ley 30709. Quisiera consultar sobre auditorías anuales de mantenimiento salarial."
+          );
+          waBtn.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${waMsg}`;
+          waBtn.innerHTML = `
+            <span style="display:inline-flex; align-items:center; gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+              Solicitar Auditoría de Mantenimiento
+            </span>`;
+        }
+      }
+
+      // Preseleccionar servicio en el formulario de contacto si hace scroll
+      if (formBtn) {
+        formBtn.onclick = () => {
+          const selectServicio = document.querySelector('select[name="servicio"]');
+          if (selectServicio) {
+            selectServicio.value = "Auditoría Ley 30709 (SUNAFIL)";
+          }
+        };
+      }
+
+      resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 450);
   });
 }
 
