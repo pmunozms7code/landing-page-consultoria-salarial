@@ -198,7 +198,7 @@ function setupModelCanvas() {
 // GESTIÓN DEL CARRUSEL DE PERFIL Y CASOS DE ÉXITO
 function setupCarousel() {
   const slides = document.querySelectorAll(".profile-slide");
-  const dots = document.querySelectorAll(".profile-dots span");
+  const dots = document.querySelectorAll(".profile-dots span, .slider-dot");
   const prevBtn = document.querySelector(".profile-arrow.prev-slide");
   const nextBtn = document.querySelector(".profile-arrow.next-slide");
 
@@ -208,7 +208,10 @@ function setupCarousel() {
 
   function showSlide(index) {
     slides.forEach(slide => slide.classList.remove("active"));
-    dots.forEach(dot => dot.classList.remove("active"));
+    dots.forEach(dot => {
+      dot.classList.remove("active");
+      dot.setAttribute("aria-selected", "false");
+    });
 
     // Ajustar límites del índice
     currentIdx = (index + slides.length) % slides.length;
@@ -216,6 +219,7 @@ function setupCarousel() {
     slides[currentIdx].classList.add("active");
     if (dots[currentIdx]) {
       dots[currentIdx].classList.add("active");
+      dots[currentIdx].setAttribute("aria-selected", "true");
     }
   }
 
@@ -234,38 +238,51 @@ function setupCarousel() {
   dots.forEach(dot => {
     dot.addEventListener("click", () => {
       const targetIdx = parseInt(dot.getAttribute("data-index"), 10);
-      showSlide(targetIdx);
+      if (!isNaN(targetIdx)) {
+        showSlide(targetIdx);
+      }
     });
   });
 }
 
-// CONTROL DE PESTAÑAS (MÉTODO - GRÁFICO VS SIMULADOR)
+// CONTROL DE PESTAÑAS (MÉTODO - GRÁFICO VS SIMULADOR VS MATRIZ EQUIDAD)
 function setupTabs() {
-  const btnShowGraph = document.getElementById("btnShowGraph");
-  const btnShowSim = document.getElementById("btnShowSim");
-  const tabGraph = document.getElementById("tabGraph");
-  const tabSim = document.getElementById("tabSim");
-
-  if (!btnShowGraph || !btnShowSim) return;
-
-  btnShowGraph.addEventListener("click", () => {
-    btnShowGraph.classList.add("active");
-    btnShowSim.classList.remove("active");
-    tabGraph.classList.add("active");
-    tabSim.classList.remove("active");
-
-    // Forzar redibujo de canvas cuando vuelve a estar visible
-    if (modelCanvasState) {
-      modelCanvasState.resize();
-      requestAnimationFrame(modelCanvasState.drawLoop);
+  const tabConfigs = [
+    {
+      btn: document.getElementById("btnShowGraph"),
+      tab: document.getElementById("tabGraph"),
+      onShow: () => {
+        if (modelCanvasState) {
+          modelCanvasState.resize();
+          requestAnimationFrame(modelCanvasState.drawLoop);
+        }
+      }
+    },
+    {
+      btn: document.getElementById("btnShowSim"),
+      tab: document.getElementById("tabSim")
+    },
+    {
+      btn: document.getElementById("btnShowEquity"),
+      tab: document.getElementById("tabEquity")
     }
-  });
+  ];
 
-  btnShowSim.addEventListener("click", () => {
-    btnShowSim.classList.add("active");
-    btnShowGraph.classList.remove("active");
-    tabSim.classList.add("active");
-    tabGraph.classList.remove("active");
+  tabConfigs.forEach(({ btn, tab, onShow }) => {
+    if (!btn || !tab) return;
+    btn.addEventListener("click", () => {
+      tabConfigs.forEach(c => {
+        if (c.btn && c.tab) {
+          c.btn.classList.remove("active");
+          c.tab.classList.remove("active");
+        }
+      });
+      btn.classList.add("active");
+      tab.classList.add("active");
+      if (typeof onShow === "function") {
+        onShow();
+      }
+    });
   });
 }
 
@@ -855,11 +872,94 @@ function syncContactLinks() {
   });
 }
 
-// INICIADOR DE ANIMACIONES SUB-VISUALES AL HACER SCROLL (INTERACTION OBSERVER)
-function setupScrollAnimations() {
+// ==========================================================================
+// ANIMACIONES CINEMATOGRÁFICAS CON GSAP 3 & SCROLLTRIGGER
+// ==========================================================================
+function setupGsapAnimations() {
+  if (prefersReduced) return;
+
+  if (window.gsap) {
+    if (window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    // 1. Hero Staggered Entrance Reveal
+    const heroTl = gsap.timeline({ defaults: { ease: "power3.out", duration: 0.9 } });
+    heroTl
+      .from(".hero-practice-tag", { y: -16, opacity: 0, delay: 0.15 })
+      .from(".hero-main-content h1", { y: 26, opacity: 0 }, "-=0.6")
+      .from(".hero-copy", { y: 22, opacity: 0 }, "-=0.65")
+      .from(".hero-actions .button", { y: 18, opacity: 0, stagger: 0.12 }, "-=0.6")
+      .from(".hero-proof .metric", { y: 20, opacity: 0, stagger: 0.12 }, "-=0.5");
+
+    // 2. Parallax cinematográfico en video de fondo
+    const video = document.getElementById("heroBgVideo");
+    if (video && window.ScrollTrigger) {
+      gsap.to(video, {
+        yPercent: 16,
+        scale: 1.1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#inicio",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8
+        }
+      });
+    }
+
+    // 3. Reveal de Tarjetas de Prácticas
+    if (window.ScrollTrigger) {
+      gsap.from(".service-card", {
+        scrollTrigger: {
+          trigger: "#servicios",
+          start: "top 80%",
+          toggleActions: "play none none none"
+        },
+        y: 32,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.1,
+        ease: "power2.out"
+      });
+
+      // 4. Reveal del Dashboard de KPIs
+      gsap.from(".dash-kpi-card", {
+        scrollTrigger: {
+          trigger: "#metodo",
+          start: "top 78%",
+          toggleActions: "play none none none"
+        },
+        y: 26,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.08,
+        ease: "power2.out"
+      });
+
+      // 5. Reveal de Pasos metodológicos
+      gsap.from(".step", {
+        scrollTrigger: {
+          trigger: ".steps",
+          start: "top 82%",
+          toggleActions: "play none none none"
+        },
+        x: -20,
+        opacity: 0,
+        duration: 0.65,
+        stagger: 0.1,
+        ease: "power2.out"
+      });
+    }
+  } else {
+    setupScrollAnimationsFallback();
+  }
+}
+
+function setupScrollAnimationsFallback() {
   if (prefersReduced) return;
   const cards = document.querySelectorAll(
-    ".service-card, .case-card, .step, .contact-item, .accordion-item, .sector-card, .testimonial-card, .nda-guarantee-card, .corp-badge"
+    ".service-card, .case-card, .step, .contact-item, .accordion-item, .sector-card, .testimonial-card, .nda-guarantee-card, .corp-badge, .dash-kpi-card"
   );
 
   const observer = new IntersectionObserver((entries) => {
@@ -881,6 +981,142 @@ function setupScrollAnimations() {
     card.style.transition = "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease";
     observer.observe(card);
   });
+}
+
+// RED CUÁNTICA DE PARTÍCULAS HERO (PEOPLE ANALYTICS DATA-MESH)
+function setupHeroParticlesCanvas() {
+  const canvas = document.getElementById("heroParticlesCanvas");
+  const hero = document.getElementById("inicio");
+  if (!canvas || !hero) return;
+
+  const ctx = canvas.getContext("2d");
+  let w = 0;
+  let h = 0;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = rect.width;
+    h = rect.height;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
+
+  let isHeroVisible = true;
+  if (window.IntersectionObserver) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isHeroVisible = entry.isIntersecting;
+        if (isHeroVisible && !prefersReduced) {
+          requestAnimationFrame(draw);
+        }
+      });
+    }, { threshold: 0.05 });
+    io.observe(hero);
+  }
+
+  let mouse = { x: null, y: null };
+  hero.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  }, { passive: true });
+
+  hero.addEventListener("mouseleave", () => {
+    mouse.x = null;
+    mouse.y = null;
+  }, { passive: true });
+
+  const particleCount = 52;
+  const particles = [];
+  const palette = [
+    "rgba(0, 90, 156, 0.8)",
+    "rgba(0, 135, 102, 0.8)",
+    "rgba(255, 255, 255, 0.7)",
+    "rgba(96, 165, 250, 0.8)"
+  ];
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * (w || 1200),
+      y: Math.random() * (h || 700),
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: 1.4 + Math.random() * 2.0,
+      color: palette[i % palette.length]
+    });
+  }
+
+  function draw() {
+    if (!isHeroVisible || w === 0 || h === 0) return;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const maxDist = 115;
+    const maxDistSq = maxDist * maxDist;
+
+    // Conexiones de red tipo data-mesh
+    for (let i = 0; i < particles.length; i++) {
+      const p1 = particles[i];
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dSq = dx * dx + dy * dy;
+
+        if (dSq < maxDistSq) {
+          const alpha = (1 - Math.sqrt(dSq) / maxDist) * 0.22;
+          ctx.strokeStyle = `rgba(147, 197, 253, ${alpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Dibujar nodos
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      if (mouse.x !== null && mouse.y !== null) {
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mDistSq = mdx * mdx + mdy * mdy;
+        if (mDistSq < 14400 && mDistSq > 10) {
+          const mDist = Math.sqrt(mDistSq);
+          const force = (1 - mDist / 120) * 1.2;
+          p.x += (mdx / mDist) * force;
+          p.y += (mdy / mDist) * force;
+        }
+      }
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0) p.x = w;
+      if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h;
+      if (p.y > h) p.y = 0;
+
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (!prefersReduced && isHeroVisible) {
+      requestAnimationFrame(draw);
+    }
+  }
+
+  requestAnimationFrame(draw);
 }
 
 // ACORDEÓN DE CAPACITACIONES INTERACTIVAS
@@ -1154,22 +1390,34 @@ function setupStatCounters() {
     const target = parseFloat(el.getAttribute("data-target")) || 0;
     const prefix = el.getAttribute("data-prefix") || "";
     const suffix = el.getAttribute("data-suffix") || "";
+    const decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
+    const isCurrency = el.getAttribute("data-format") === "currency";
     const duration = 1600;
     const startTime = performance.now();
+
+    const formatVal = (val) => {
+      let str = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
+      if (isCurrency || val >= 1000) {
+        const parts = str.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        str = parts.join(".");
+      }
+      return `${prefix}${str}${suffix}`;
+    };
 
     const update = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       // Curva easeOutExpo para frenado ultra elegante y profesional
       const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      const current = Math.round(ease * target);
+      const current = target * ease;
 
-      el.textContent = `${prefix}${current}${suffix}`;
+      el.textContent = formatVal(current);
 
       if (progress < 1) {
         requestAnimationFrame(update);
       } else {
-        el.textContent = `${prefix}${target}${suffix}`;
+        el.textContent = formatVal(target);
       }
     };
     requestAnimationFrame(update);
@@ -1295,7 +1543,8 @@ function initializeApp() {
   setupTabs();
   setupSimulator();
   setupLeadForm();
-  setupScrollAnimations();
+  setupGsapAnimations();
+  setupHeroParticlesCanvas();
   setupProfileInteractiveCanvas();
   setupModelCanvas();
   setupAccordion();

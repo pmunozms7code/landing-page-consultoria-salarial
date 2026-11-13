@@ -122,6 +122,7 @@
                muted playsinline loop preload="metadata" 
                aria-label="Fondo audiovisual corporativo en movimiento">
         </video>
+        <canvas id="heroParticlesCanvas" class="hero-particles-canvas" aria-hidden="true"></canvas>
         <div class="hero-video-overlay"></div>
       </div>
 
@@ -173,10 +174,6 @@
         <!-- Canvas de fondo para curvas salariales interactivas -->
         <canvas id="profileCanvas" class="profile-canvas-bg" aria-hidden="true"></canvas>
 
-        <button class="profile-arrow prev-slide" type="button" aria-label="Anterior">
-          <span></span>
-        </button>
-
         <div class="profile-slider-track">
           <!-- Slide 1: Presentación Personal -->
           <div class="profile-slide active" data-index="0">
@@ -196,14 +193,14 @@
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quisiera%20solicitar%20un%20diagn%C3%B3stico%20preliminar%20de%20nuestra%20estructura%20salarial."
                       target="_blank" rel="noreferrer">
-                      <span class="button-icon">WA</span>
-                      Solicitar Diagnóstico Institucional
+                      <svg class="official-wa-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                      <span>Solicitar Diagnóstico Institucional</span>
                     </a>
                     <a class="profile-button linkedin"
                       href="https://www.linkedin.com/in/percy-saul-muñoz-sierra-a1363a302" target="_blank"
                       rel="noreferrer">
-                      <span class="button-icon">in</span>
-                      Conectar en LinkedIn
+                      <svg class="official-li-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                      <span>Conectar en LinkedIn</span>
                     </a>
                   </div>
                 </div>
@@ -244,8 +241,8 @@
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20conocer%20m%C3%A1s%20sobre%20el%20caso%20de%20éxito%20Retail."
                       target="_blank" rel="noreferrer">
-                      <span class="button-icon">WA</span>
-                      Consultar este caso
+                      <svg class="official-wa-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                      <span>Consultar este caso</span>
                     </a>
                   </div>
                 </div>
@@ -277,8 +274,8 @@
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20necesito%20asesoría%20con%20el%20cumplimiento%20de%20la%20ley%2030709."
                       target="_blank" rel="noreferrer">
-                      <span class="button-icon">WA</span>
-                      Solicitar auditoría preventiva
+                      <svg class="official-wa-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                      <span>Solicitar auditoría preventiva</span>
                     </a>
                   </div>
                 </div>
@@ -314,8 +311,8 @@
                     <a class="profile-button whatsapp"
                       href="https://wa.me/51931697778?text=Hola%20Percy%2C%20quiero%20consultar%20sobre%20dise%C3%B1o%20de%20bandas%20de%20puestos."
                       target="_blank" rel="noreferrer">
-                      <span class="button-icon">WA</span>
-                      Consultar bandas tech
+                      <svg class="official-wa-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.59c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                      <span>Consultar bandas tech</span>
                     </a>
                   </div>
                 </div>
@@ -324,15 +321,20 @@
           </div>
         </div>
 
-        <button class="profile-arrow next-slide" type="button" aria-label="Siguiente">
-          <span></span>
-        </button>
-
-        <div class="profile-dots" aria-hidden="true">
-          <span class="active" data-index="0"></span>
-          <span data-index="1"></span>
-          <span data-index="2"></span>
-          <span data-index="3"></span>
+        <!-- Barra de Navegación del Slider: sin superposición, totalmente adaptativa -->
+        <div class="slider-nav-bar" aria-label="Controles del carrusel">
+          <button class="profile-arrow prev-slide" type="button" aria-label="Caso anterior">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="profile-dots" role="tablist" aria-label="Selector de casos de estudio">
+            <button class="slider-dot active" data-index="0" role="tab" aria-selected="true" aria-label="Perfil y Diagnóstico"></button>
+            <button class="slider-dot" data-index="1" role="tab" aria-selected="false" aria-label="Caso Retail"></button>
+            <button class="slider-dot" data-index="2" role="tab" aria-selected="false" aria-label="Caso Ley 30709"></button>
+            <button class="slider-dot" data-index="3" role="tab" aria-selected="false" aria-label="Caso Startups Tech"></button>
+          </div>
+          <button class="profile-arrow next-slide" type="button" aria-label="Caso siguiente">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
     </section>
@@ -347,51 +349,148 @@
         </div>
 
         <div class="service-grid">
+          <!-- Servicio 01 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">01</span>
-              <h3>Valuación de puestos</h3>
-              <p>Aplicación de metodologías por factores, niveles, responsabilidad, complejidad, impacto y contribución
-                al negocio.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                    <path d="M4 20h16"/>
+                  </svg>
+                </div>
+                <span class="service-tag">Hay &bull; Mercer</span>
+              </div>
+              <h3>Valuación Objetiva de Puestos</h3>
+              <p>Metodología cuantitativa por factores y puntos: ponderación de responsabilidades, impacto financiero y competencias para una jerarquía interna sin sesgos.</p>
+              <ul class="service-features">
+                <li>Manual de valoración y catálogo de cargos</li>
+                <li>Comité de valuación y calibración por factores</li>
+                <li>Estructura jerárquica auditada y validada</li>
+              </ul>
             </div>
           </article>
+
+          <!-- Servicio 02 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">02</span>
-              <h3>Equidad y Ley 30709</h3>
-              <p>Diagnóstico de brechas, dispersión, solapamientos, competitividad de mercado y blindaje normativo ante
-                inspecciones de SUNAFIL.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                  </svg>
+                </div>
+                <span class="service-tag">Compliance SUNAFIL</span>
+              </div>
+              <h3>Equidad Salarial & Ley 30709</h3>
+              <p>Blindaje integral ante fiscalizaciones laborales. Cuadro de categorías y funciones, política de compensaciones y sustento técnico de brechas remunerativas.</p>
+              <ul class="service-features">
+                <li>Cuadro de Categorías y Funciones oficial</li>
+                <li>Política Remunerativa y comunicación interna</li>
+                <li>Informe de Brechas con justificaciones objetivas</li>
+              </ul>
             </div>
           </article>
+
+          <!-- Servicio 03 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">03</span>
-              <h3>Bandas salariales</h3>
-              <p>Construcción de rangos por familia, grado y mercado, con criterios de progresión y control
-                presupuestario.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18"/>
+                    <path d="M7 16l4-8 4 6 5-10"/>
+                    <circle cx="11" cy="8" r="1.5"/>
+                    <circle cx="15" cy="14" r="1.5"/>
+                    <circle cx="20" cy="4" r="1.5"/>
+                  </svg>
+                </div>
+                <span class="service-tag">Mercado & Bandas</span>
+              </div>
+              <h3>Bandas Salariales & Competitividad</h3>
+              <p>Construcción de escalas y curvas salariales calibradas con encuestas de mercado (P25, P50, P75), con criterios de progresión por mérito y control presupuestario.</p>
+              <ul class="service-features">
+                <li>Curva de equidad interna vs. mercado exterior</li>
+                <li>Rangos de amplitud y solapamiento entre grados</li>
+                <li>Políticas de incremento y compa-ratio institucional</li>
+              </ul>
             </div>
           </article>
+
+          <!-- Servicio 04 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">04</span>
-              <h3>Optimización salarial (OPEX)</h3>
-              <p>Asignación óptima de incrementos bajo presupuesto mediante programación lineal y simulación de
-                escenarios analíticos.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                    <path d="M7 8l3 3-3 3"/>
+                    <line x1="13" y1="14" x2="17" y2="14"/>
+                  </svg>
+                </div>
+                <span class="service-tag">Optimización &bull; Python</span>
+              </div>
+              <h3>Optimización Presupuestal OPEX</h3>
+              <p>Modelamiento cuantitativo en Python (PuLP / SciPy) para asignar presupuestos de incremento cerrando brechas con el menor costo financiero para la organización.</p>
+              <ul class="service-features">
+                <li>Programación lineal con restricciones reales de caja</li>
+                <li>Simulación analítica de escenarios presupuestarios</li>
+                <li>Alineamiento con retención de talento crítico</li>
+              </ul>
             </div>
           </article>
+
+          <!-- Servicio 05 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">05</span>
-              <h3>Mentoría en Payroll</h3>
-              <p>Acompañamiento en el ciclo de nóminas: T-Registro/PLAME, cálculo de beneficios sociales (CTS, grati,
-                vacaciones), AFPnet y contingencias laborales.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <span class="service-tag">Nóminas & PLAME</span>
+              </div>
+              <h3>Mentoría en Payroll & Laboral</h3>
+              <p>Auditoría preventiva del ciclo integral de nóminas: T-Registro, PLAME, cálculo de beneficios sociales (CTS, gratificaciones, vacaciones) y aportes a AFPnet.</p>
+              <ul class="service-features">
+                <li>Validación de consistencia en PLAME y T-Registro</li>
+                <li>Tratamiento de conceptos no remunerativos</li>
+                <li>Mitigación de contingencias en desvinculaciones</li>
+              </ul>
             </div>
           </article>
+
+          <!-- Servicio 06 -->
           <article class="service-card">
-            <div>
-              <span class="service-index">06</span>
-              <h3>Consultoría Tributaria y Contable</h3>
-              <p>Asesoría bajo normas peruanas: planeamiento tributario (IGV, Renta 3ra y 5ta categoría), elaboración de EEFF bajo NIIF, auditorías preventivas y soporte en fiscalizaciones SUNAT.</p>
+            <div class="service-card-inner">
+              <div class="service-header-row">
+                <div class="service-icon-wrap" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                    <circle cx="7" cy="15" r="1"/>
+                    <circle cx="12" cy="15" r="1"/>
+                    <circle cx="17" cy="15" r="1"/>
+                  </svg>
+                </div>
+                <span class="service-tag">SUNAT &bull; NIIF &bull; Fiscal</span>
+              </div>
+              <h3>Consultoría Tributaria & Contable</h3>
+              <p>Asesoría bajo legislación peruana y NIIF: deducibilidad de gastos de personal (LIR Art. 37), retenciones de 5ta categoría, IGV y soporte ante fiscalizaciones SUNAT.</p>
+              <ul class="service-features">
+                <li>Planeamiento tributario y fiscalidad de la compensación</li>
+                <li>Auditorías preventivas de Renta de 5ta categoría</li>
+                <li>Elaboración de dictámenes contable-tributarios</li>
+              </ul>
             </div>
           </article>
         </div>
@@ -403,9 +502,44 @@
         <div class="section-heading">
           <h2>Una metodología cuantitativa sin perder criterio humano</h2>
           <p>
-            El modelo ayuda a priorizar, pero la recomendación final incorpora estrategia, cultura, criticidad del
-            talento, cumplimiento normativo y viabilidad operativa.
+            El modelo analítico optimiza la distribución de recursos, mientras que la consultoría estratégica incorpora cultura, criticidad del talento y blindaje normativo ante SUNAFIL y SUNAT.
           </p>
+        </div>
+
+        <!-- Barra de KPIs Ejecutivos del Dashboard Metodológico -->
+        <div class="dashboard-kpi-bar" aria-label="Indicadores ejecutivos del modelo analítico">
+          <div class="dash-kpi-card">
+            <div class="dash-kpi-header">
+              <span class="dash-kpi-label">Bolsa Salarial Auditada</span>
+              <span class="dash-kpi-badge">Anual 2025-2026</span>
+            </div>
+            <div class="dash-kpi-value"><span class="kpi-prefix">S/ </span><strong class="counter-val" data-target="1480000" data-format="currency">1,480,000</strong></div>
+            <div class="dash-kpi-sub">Masa salarial bajo optimización continua</div>
+          </div>
+          <div class="dash-kpi-card">
+            <div class="dash-kpi-header">
+              <span class="dash-kpi-label">Puestos Clave Valuados</span>
+              <span class="dash-kpi-badge">Hay / Mercer</span>
+            </div>
+            <div class="dash-kpi-value"><strong class="counter-val" data-target="48">48</strong><span class="kpi-suffix"> Roles</span></div>
+            <div class="dash-kpi-sub">Valoración objetiva por factores y puntos</div>
+          </div>
+          <div class="dash-kpi-card">
+            <div class="dash-kpi-header">
+              <span class="dash-kpi-label">Índice de Equidad Interna</span>
+              <span class="dash-kpi-badge compliance">Ley 30709</span>
+            </div>
+            <div class="dash-kpi-value"><strong class="counter-val" data-target="96.4" data-decimals="1" data-suffix="%">96.4%</strong></div>
+            <div class="dash-kpi-sub">Brecha no justificada: 0.0%</div>
+          </div>
+          <div class="dash-kpi-card">
+            <div class="dash-kpi-header">
+              <span class="dash-kpi-label">Riesgo Fiscal & Laboral</span>
+              <span class="dash-kpi-badge shield">SUNAFIL / SUNAT</span>
+            </div>
+            <div class="dash-kpi-value"><strong class="counter-val" data-target="0">0</strong><span class="kpi-suffix"> Sanciones</span></div>
+            <div class="dash-kpi-sub">100% Blindaje preventivo institucional</div>
+          </div>
         </div>
 
         <div class="method">
@@ -413,6 +547,7 @@
             <div class="model-tabs">
               <button class="model-tab-btn active" id="btnShowGraph" type="button">Bandas & Estructura por Grados</button>
               <button class="model-tab-btn" id="btnShowSim" type="button">Optimizador Presupuestal OPEX (Python)</button>
+              <button class="model-tab-btn" id="btnShowEquity" type="button">Matriz de Equidad Ley 30709</button>
             </div>
 
             <div class="model-tab-content active" id="tabGraph">
@@ -512,6 +647,78 @@
                     <span class="res-num" id="resGapClosed">0%</span>
                     <span class="res-lbl">Brecha Total Cerrada</span>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Matriz de Equidad Salarial Ley 30709 -->
+            <div class="model-tab-content" id="tabEquity">
+              <div class="equity-matrix-wrap">
+                <div class="equity-matrix-header">
+                  <div>
+                    <h3>Matriz de Categorías y Funciones (Ley 30709)</h3>
+                    <p>Estructura salarial clasificada por Grados Hay / Mercer, bandas de mercado y validación de brechas de género objetivamente justificadas.</p>
+                  </div>
+                  <div class="equity-status-badge">
+                    <span class="pulse-dot"></span>
+                    <span>100% Conforme ante SUNAFIL</span>
+                  </div>
+                </div>
+                <div class="equity-table-responsive">
+                  <table class="equity-table">
+                    <thead>
+                      <tr>
+                        <th>Grado</th>
+                        <th>Familia de Puestos</th>
+                        <th>Puntos Hay</th>
+                        <th>Banda Mercado (S/)</th>
+                        <th>Distribución (M/F)</th>
+                        <th>Brecha Ajustada</th>
+                        <th>Estatus Ley 30709</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="grade-pill g10">G10</span></td>
+                        <td><strong>Analistas & Especialistas Jr.</strong></td>
+                        <td>280 - 350 pts</td>
+                        <td>S/ 3,200 - S/ 4,800</td>
+                        <td>6 H / 8 M</td>
+                        <td><span class="gap-pill neutral">+0.8%</span></td>
+                        <td><span class="status-pill ok">✔ Conforme</span></td>
+                      </tr>
+                      <tr>
+                        <td><span class="grade-pill g12">G12</span></td>
+                        <td><strong>Especialistas Senior & Coordinadores</strong></td>
+                        <td>410 - 520 pts</td>
+                        <td>S/ 5,100 - S/ 7,900</td>
+                        <td>5 H / 5 M</td>
+                        <td><span class="gap-pill neutral">-1.2%</span></td>
+                        <td><span class="status-pill ok">✔ Conforme</span></td>
+                      </tr>
+                      <tr>
+                        <td><span class="grade-pill g14">G14</span></td>
+                        <td><strong>Jefaturas de Área</strong></td>
+                        <td>580 - 740 pts</td>
+                        <td>S/ 8,900 - S/ 13,500</td>
+                        <td>4 H / 3 M</td>
+                        <td><span class="gap-pill neutral">+1.5%</span></td>
+                        <td><span class="status-pill ok">✔ Conforme</span></td>
+                      </tr>
+                      <tr>
+                        <td><span class="grade-pill g16">G16</span></td>
+                        <td><strong>Gerencias Funcionales</strong></td>
+                        <td>820 - 1,050 pts</td>
+                        <td>S/ 14,300 - S/ 22,000</td>
+                        <td>2 H / 2 M</td>
+                        <td><span class="gap-pill neutral">0.0%</span></td>
+                        <td><span class="status-pill ok">✔ Conforme</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="equity-footer-notes">
+                  <span>* Criterios objetivos de justificación aplicados: antigüedad en el cargo, desempeño calificado y postgrados reconocidos por SUNEDU.</span>
                 </div>
               </div>
             </div>
@@ -1326,7 +1533,10 @@
     </div>
   </a>
 
-  <script src="script.js?v=2"></script>
+  <!-- GSAP 3 & ScrollTrigger para Animaciones Cinematográficas Corporativas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js?v=3"></script>
 </body>
 
 </html>
