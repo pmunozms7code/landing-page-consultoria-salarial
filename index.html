@@ -551,10 +551,28 @@
             </div>
 
             <div class="model-tab-content active" id="tabGraph">
-              <canvas id="modelCanvas" aria-label="Visualización de bandas salariales y dispersión"></canvas>
-              <div class="model-caption">
-                <strong>Bandas Salariales y Curva de Política de Mercado</strong>
-                <span>Estructura de grados Hay / Mercer con dispersión interna de puestos y calibración de midpoint.</span>
+              <div class="model-header-bar">
+                <div class="model-header-info">
+                  <h3 class="model-header-title">Bandas Salariales y Curva de Política de Mercado</h3>
+                  <p class="model-header-desc">Estructura de 4 grados (Metodología Hay / Mercer) con dispersión interna de colaboradores y calibración de midpoint.</p>
+                </div>
+                <div class="model-header-legend" aria-label="Leyenda de bandas salariales">
+                  <div class="legend-badge">
+                    <span class="legend-indicator legend-line-mid" aria-hidden="true"></span>
+                    <span>Midpoint P50 (Mercado)</span>
+                  </div>
+                  <div class="legend-badge">
+                    <span class="legend-indicator legend-box-range" aria-hidden="true"></span>
+                    <span>Banda Salarial (Min - Max)</span>
+                  </div>
+                  <div class="legend-badge">
+                    <span class="legend-indicator legend-dot-emp" aria-hidden="true"></span>
+                    <span>Colaboradores</span>
+                  </div>
+                </div>
+              </div>
+              <div class="model-canvas-container">
+                <canvas id="modelCanvas" aria-label="Visualización de bandas salariales y dispersión"></canvas>
               </div>
             </div>
 

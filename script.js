@@ -60,15 +60,15 @@ function setupModelCanvas() {
     if (!canvas.offsetParent || w === 0 || h === 0) return;
 
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "#0A1118";
+    ctx.fillStyle = "#071224";
     ctx.fillRect(0, 0, w, h);
 
-    const left = 68;
-    const bottom = h - 90;
-    const top = 36;
-    const right = w - 36;
-    const plotW = right - left;
-    const plotH = bottom - top;
+    const left = Math.max(72, Math.min(84, Math.floor(w * 0.16)));
+    const right = w - 24;
+    const top = 32;
+    const bottom = h - 44;
+    const plotW = Math.max(10, right - left);
+    const plotH = Math.max(10, bottom - top);
 
     // Cuadriculado cartesiano de bandas salariales
     ctx.strokeStyle = "rgba(255, 255, 255, 0.07)";
@@ -84,7 +84,7 @@ function setupModelCanvas() {
     ];
 
     ctx.font = "10.5px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = "rgba(226, 232, 240, 0.60)";
+    ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
     ctx.textAlign = "right";
 
     yTicks.forEach(tick => {
@@ -98,13 +98,13 @@ function setupModelCanvas() {
 
     // 4 Grados Salariales Estructurados (Metodología Hay / Mercer)
     const grades = [
-      { label: "G10: Analistas", xPct: 0.14, min: 0.90, mid: 0.78, max: 0.66, color: "#008766" },
-      { label: "G12: Especialistas", xPct: 0.38, min: 0.74, mid: 0.60, max: 0.46, color: "#005A9C" },
-      { label: "G14: Jefaturas", xPct: 0.62, min: 0.54, mid: 0.40, max: 0.26, color: "#4338CA" },
-      { label: "G16: Gerencias", xPct: 0.86, min: 0.34, mid: 0.20, max: 0.06, color: "#3B82F6" }
+      { label: "G10: Analistas", short: "G10", role: "Analistas", xPct: 0.14, min: 0.90, mid: 0.78, max: 0.66, color: "#10B981" },
+      { label: "G12: Especialistas", short: "G12", role: "Especialistas", xPct: 0.38, min: 0.74, mid: 0.60, max: 0.46, color: "#00A3E0" },
+      { label: "G14: Jefaturas", short: "G14", role: "Jefaturas", xPct: 0.62, min: 0.54, mid: 0.40, max: 0.26, color: "#818CF8" },
+      { label: "G16: Gerencias", short: "G16", role: "Gerencias", xPct: 0.86, min: 0.34, mid: 0.20, max: 0.06, color: "#38BDF8" }
     ];
 
-    const bandWidth = Math.min(84, plotW * 0.19);
+    const bandWidth = Math.min(84, Math.floor(plotW * 0.18));
 
     // Dibujar las 4 bandas salariales rectangulares con Min, Midpoint y Max
     grades.forEach((g) => {
@@ -115,16 +115,16 @@ function setupModelCanvas() {
       const bMid = top + plotH * g.mid;
 
       // Caja de la banda (rango salarial)
-      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.035)";
       ctx.fillRect(cx - bandWidth / 2, bTop, bandWidth, bHeight);
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.20)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
       ctx.lineWidth = 1;
       ctx.strokeRect(cx - bandWidth / 2, bTop, bandWidth, bHeight);
 
       // Línea de Midpoint (P50 Mercado) dentro de la banda
       ctx.strokeStyle = g.color;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       ctx.moveTo(cx - bandWidth / 2, bMid);
       ctx.lineTo(cx + bandWidth / 2, bMid);
@@ -138,21 +138,30 @@ function setupModelCanvas() {
 
         ctx.fillStyle = g.color;
         ctx.beginPath();
-        ctx.arc(cx + jitterX, y, 3.2, 0, Math.PI * 2);
+        ctx.arc(cx + jitterX, y, 3.4, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Etiqueta del grado en eje X
-      ctx.font = "10.5px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      // Etiqueta del grado en eje X (con espacio limpio, sin superposición)
       ctx.textAlign = "center";
-      ctx.fillText(g.label, cx, bottom + 20);
+      if (plotW < 380) {
+        ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(g.short, cx, bottom + 16);
+        ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = "rgba(148, 163, 184, 0.85)";
+        ctx.fillText(g.role, cx, bottom + 28);
+      } else {
+        ctx.font = "600 11.5px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(g.label, cx, bottom + 20);
+      }
     });
 
-    // Línea conectora de Midpoint de Mercado (Curva de Política Salarial)
-    ctx.strokeStyle = "rgba(0, 90, 156, 0.80)";
+    // Línea conectora de Midpoint de Mercado (Curva de Política Salarial P50)
+    ctx.strokeStyle = "#38BDF8";
     ctx.lineWidth = 2;
-    ctx.setLineDash([4, 4]);
+    ctx.setLineDash([5, 5]);
     ctx.beginPath();
     grades.forEach((g, idx) => {
       const cx = left + plotW * g.xPct;
@@ -163,13 +172,11 @@ function setupModelCanvas() {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Título de los Ejes
+    // Título del Eje Y (limpio, a la izquierda; la leyenda está en el encabezado HTML)
     ctx.textAlign = "left";
-    ctx.font = "10px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+    ctx.font = "600 11px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillStyle = "rgba(226, 232, 240, 0.75)";
     ctx.fillText("▲ Remuneración Básica Mensual (S/.)", left, top - 12);
-    ctx.textAlign = "right";
-    ctx.fillText("Línea de Mediana de Mercado (Midpoint P50) ──", right, top - 12);
 
     // Ejes cartesianos
     ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
