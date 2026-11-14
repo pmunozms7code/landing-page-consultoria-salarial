@@ -63,8 +63,9 @@ function setupModelCanvas() {
     ctx.fillStyle = "#071224";
     ctx.fillRect(0, 0, w, h);
 
-    const left = Math.max(72, Math.min(84, Math.floor(w * 0.16)));
-    const right = w - 24;
+    const isNarrow = w < 360;
+    const left = isNarrow ? 48 : Math.max(72, Math.min(84, Math.floor(w * 0.16)));
+    const right = isNarrow ? w - 14 : w - 24;
     const top = 32;
     const bottom = h - 44;
     const plotW = Math.max(10, right - left);
@@ -74,13 +75,13 @@ function setupModelCanvas() {
     ctx.strokeStyle = "rgba(255, 255, 255, 0.07)";
     ctx.lineWidth = 1;
 
-    // Líneas horizontales de salario (Y)
+    // Líneas horizontales de salario (Y) con formato compacto adaptativo
     const yTicks = [
-      { val: "S/. 24,000", ratio: 0.08 },
-      { val: "S/. 18,000", ratio: 0.28 },
-      { val: "S/. 12,000", ratio: 0.50 },
-      { val: "S/. 7,000",  ratio: 0.72 },
-      { val: "S/. 3,200",  ratio: 0.92 }
+      { val: isNarrow ? "24K" : "S/. 24,000", ratio: 0.08 },
+      { val: isNarrow ? "18K" : "S/. 18,000", ratio: 0.28 },
+      { val: isNarrow ? "12K" : "S/. 12,000", ratio: 0.50 },
+      { val: isNarrow ? "7K" : "S/. 7,000",  ratio: 0.72 },
+      { val: isNarrow ? "3.2K" : "S/. 3,200",  ratio: 0.92 }
     ];
 
     ctx.font = "10.5px 'Plus Jakarta Sans', sans-serif";
@@ -541,11 +542,11 @@ function setupProfileInteractiveCanvas() {
       ? ["#38BDF8", "#00A3E0", "#34D399", "#818CF8", "#A7F3D0"]
       : ["#00205B", "#005A9C", "#008766", "#334155", "#0284C7"];
 
-    // Eje y márgenes cartesianos
-    const marginL = 50;
+    // Eje y márgenes cartesianos adaptativos
+    const marginL = w < 500 ? 24 : 50;
     const marginB = 30;
     const marginT = 25;
-    const marginR = 56;
+    const marginR = w < 500 ? 32 : 56;
     const plotW = Math.max(10, w - marginL - marginR);
     const plotH = Math.max(10, h - marginB - marginT);
 
@@ -635,11 +636,14 @@ function setupProfileInteractiveCanvas() {
       }
       ctx.stroke();
 
-      // Etiqueta tenue del percentil en el margen derecho exterior
-      ctx.font = "600 10px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = c.color;
-      ctx.textAlign = "left";
-      ctx.fillText(c.label, w - marginR + 6, lastY + 3);
+      // Etiqueta tenue del percentil en el margen derecho exterior (compacta en pantallas móviles)
+      if (w >= 340) {
+        const labelText = w < 540 ? (c.label.startsWith("P50") ? "P50" : c.label) : c.label;
+        ctx.font = "600 10px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = c.color;
+        ctx.textAlign = "left";
+        ctx.fillText(labelText, w - marginR + 4, lastY + 3);
+      }
     });
 
     // Puntos de dispersión salarial tenues (Colaboradores / Puestos)
@@ -1138,11 +1142,15 @@ function setupAccordion() {
   });
 }
 
-// Event Listeners y Carga de Módulos
+// Event Listeners y Carga de Módulos (Adaptación Dinámica Multidispositivo)
 window.addEventListener("resize", () => {
   if (modelCanvasState) {
     modelCanvasState.resize();
   }
+  // Recalcular altura de acordeones abiertos ante cambio de orientación o escala
+  document.querySelectorAll(".accordion-item.active .accordion-content").forEach((c) => {
+    c.style.maxHeight = `${c.scrollHeight}px`;
+  });
 }, { passive: true });
 
 // EVALUADOR DE RIESGO DE CUMPLIMIENTO LEY 30709 (QUIZ FUNNEL CRO)
